@@ -43,7 +43,7 @@ class State
     /**
     * Cast Operator for lua_State*
     */
-    operator lua_State* ();
+    operator lua_State* const ();
     
     /**
     * Get the lua state manually

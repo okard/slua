@@ -1,6 +1,8 @@
 
 #include <slua/State.hpp>
 
+#include <slua/Exception.hpp>
+
 //Lua Includes
 extern "C" {
     #include <lua.h>
@@ -25,6 +27,8 @@ State::State()
 */
 State::~State()
 {
+    lua_close(state_);
+    state_ = nullptr;
 }
 
 /**
@@ -32,7 +36,12 @@ State::~State()
 */
 void State::LoadFile(const char* file)
 {
-    
+    int status = luaL_loadfile(state_, file);
+    if (status)
+    {
+        throw LuaException("Can't load lua file");
+        //LOG("Couldn't load file: " << lua_tostring(state, -1))
+    }
 }
 
 /**
@@ -40,9 +49,16 @@ void State::LoadFile(const char* file)
 */
 int State::Execute()
 {
+    return lua_pcall(state_, 0, LUA_MULTRET, 0);
 }
 
-
+/**
+* Cast to lua_State
+*/
+State::operator lua_State* const()
+{
+    return state_;
+}
 
 /**
 * Get the lua state manually

@@ -2,8 +2,8 @@
 
 */
 #pragma once
-#ifndef __SLUA_LUACONTEXT_HPP__
-#define __SLUA LUACONTEXT_HPP__
+#ifndef __SLUA_CONTEXT_HPP__
+#define __SLUA CONTEXT_HPP__
 
 struct lua_State;
 
@@ -17,10 +17,10 @@ class Context
 {
 private:
     ///stack size at start
-    int stacksize;
+    int stacksize_;
     
     ///lua state
-    lua_State* luaState;
+    lua_State* state_;
       
 public:
         
@@ -59,7 +59,7 @@ public:
     /**
     * get stack count
     */
-    int stackCount();
+    int stackCount() const; 
     
 
     //Push-Methods
@@ -82,4 +82,4 @@ public:
 
 } //end namespace slua
 
-#endif /* __SLUA LUACONTEXT_HPP__ */
+#endif /* __SLUA CONTEXT_HPP__ */
