@@ -34,7 +34,10 @@ public:
     */
     Context(lua_State* state);
     
-    //TODO copy constructor
+    /**
+    * Copy Constructor
+    */
+    Context(const Context& ctx);
     
     /**
     * Destructor
@@ -44,7 +47,7 @@ public:
     /**
     * Assign Context to a lua_State
     */
-    void assign(lua_State* state);
+    void assign(lua_State* const state);
     
     /**
     * validate the lua stack

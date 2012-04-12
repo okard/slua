@@ -21,11 +21,11 @@
         }
 
         static const char className[];
-        static const Luna<Foo>::RegType Register[];
+        static const  LuaBind<Foo>::RegType Register[];
     };
 
     const char Foo::className[] = "Foo";
-    const Luna<Foo>::RegType Foo::Register[] = {
+    const  LuaBind<Foo>::RegType Foo::Register[] = {
       { "foo", &Foo::foo },
       { 0 }
     };
@@ -185,56 +185,56 @@ template<class T> class LuaSingleton
     {
       	T* obj = 0;
 	
-	//access table
-	lua_getglobal(state, LuaSingleton<T>::storeName);
-	if (!lua_istable(state, -1))
-	{
-            //pop nil after get global failed
-            if(lua_isnil(state, -1))
-                lua_pop(state, 1);
-	    //not exist create new one
-	    lua_newtable(state);
-	    
-	    //if not exist theres still no pointer create new one and got out
-	    obj = new T(state);
-	    
-	    //push ptr here
-	    lua_pushlightuserdata(state, obj);
-            lua_setfield(state, -2, T::className);
+        //access table
+        lua_getglobal(state, LuaSingleton<T>::storeName);
+        if (!lua_istable(state, -1))
+        {
+                //pop nil after get global failed
+                if(lua_isnil(state, -1))
+                    lua_pop(state, 1);
+            //not exist create new one
+            lua_newtable(state);
+            
+            //if not exist theres still no pointer create new one and got out
+            obj = new T(state);
+            
+            //push ptr here
+            lua_pushlightuserdata(state, obj);
+                lua_setfield(state, -2, T::className);
 
-	    //set global store table
-	    lua_setglobal(state, LuaSingleton<T>::storeName);	    
-	    return obj;
-	}
+            //set global store table
+            lua_setglobal(state, LuaSingleton<T>::storeName);	    
+            return obj;
+        }
 	
 	
-	//get field
-        lua_getfield(state, -2, T::className);
-	//no field create new one
-	if(!lua_islightuserdata(state, -1))
-	{
-            if(lua_isnil(state, -1))
+        //get field
+            lua_getfield(state, -2, T::className);
+        //no field create new one
+        if(!lua_islightuserdata(state, -1))
+        {
+                if(lua_isnil(state, -1))
+                    lua_pop(state, 1);
+                
+            obj = new T(state);
+            lua_pushlightuserdata(state, obj);
+                lua_setfield(state, -2, T::className);
+                
+                //pops the table from stack
                 lua_pop(state, 1);
             
-	    obj = new T(state);
-	    lua_pushlightuserdata(state, obj);
-            lua_setfield(state, -2, T::className);
-            
-            //pops the table from stack
-            lua_pop(state, 1);
-	    
-	    return obj;
-	}
+            return obj;
+        }
 	
-	//lua_rawget(state,-2);
-	obj = static_cast<T*>(lua_touserdata(state,-1));
-	
-        //pops userdata and table
-	lua_pop(state, 2);
+        //lua_rawget(state,-2);
+        obj = static_cast<T*>(lua_touserdata(state,-1));
         
-	
-	//return obj
-	return obj;
+            //pops userdata and table
+        lua_pop(state, 2);
+            
+        
+        //return obj
+        return obj;
     }
     
 };
@@ -282,22 +282,22 @@ template<class T> class LuaFunctions
     static bool Register(lua_State* state, T* obj)
     {
         //std::cout << "Register Functions for Object: " << obj << std::endl;
+            
+        //TODO Check for Table
+            if(!lua_istable(state, -1))
+                return false;
+            
+        //Register all Functions in Class Function Register
+        for (int i = 0; T::Register[i].name; i++) 
+        {
+            // register the functions
+            lua_pushlightuserdata(state, obj);
+            lua_pushnumber(state, i); // let the thunk know which method we mean
+            lua_pushcclosure(state, &LuaFunctions<T>::dispatch, 2);
+            lua_setfield(state, -2, T::Register[i].name);
+        } 
         
-	//TODO Check for Table
-        if(!lua_istable(state, -1))
-            return false;
-        
-	//Register all Functions in Class Function Register
-	for (int i = 0; T::Register[i].name; i++) 
-	{
-	  // register the functions
-	  lua_pushlightuserdata(state, obj);
-	  lua_pushnumber(state, i); // let the thunk know which method we mean
-	  lua_pushcclosure(state, &LuaFunctions<T>::dispatch, 2);
-          lua_setfield(state, -2, T::Register[i].name);
-	} 
-	
-	return true;
+        return true;
     }
     
     /**
@@ -305,12 +305,12 @@ template<class T> class LuaFunctions
     */
     static int dispatch(lua_State *state) 
     {
-	//get parameter 
-	T* obj = static_cast<T*>(lua_touserdata(state, lua_upvalueindex(1)));
-	int no = lua_tonumber(state, lua_upvalueindex(2));
-        
-	//Execute Function
-        return (obj->*T::Register[no].mfunc)(state);
+        //get parameter 
+        T* obj = static_cast<T*>(lua_touserdata(state, lua_upvalueindex(1)));
+        int no = lua_tonumber(state, lua_upvalueindex(2));
+            
+        //Execute Function
+            return (obj->*T::Register[no].mfunc)(state);
     }
 };
 

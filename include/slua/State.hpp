@@ -1,6 +1,7 @@
 /*
 
 */
+#pragma once
 #ifndef __SLUA_STATE_HPP__
 #define __SLUA_STATE_HPP__
 
@@ -49,6 +50,9 @@ class State
     * Get the lua state manually
     */
     lua_State* const getState() const;  
+    
+    
+    //ref to global table?
 };
 
 } //end namespace slua

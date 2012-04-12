@@ -30,7 +30,14 @@ Context::Context(lua_State* state)
 {
 }
 
-//TODO copy constructor
+/**
+* Copy Constructor
+*/
+Context::Context(const Context& ctx)
+    : state_(ctx.state_),
+    stacksize_(ctx.stacksize_)
+{
+}
 
 /**
 * Destructor
@@ -42,7 +49,7 @@ Context::~Context()
 /**
 * Assign Context to a lua_State
 */
-void Context::assign(lua_State* state)
+void Context::assign(lua_State* const state)
 {
     state_ = state;
     stacksize_ = lua_gettop (state_);
