@@ -5,10 +5,14 @@
 #ifndef __SLUA_TABLE_HPP__
 #define __SLUA_TABLE_HPP__
 
+#include "Context.hpp"
+#include "Value.hpp"
+
+
 namespace slua {
   
 //LuaTable Handling
-class Table
+class Table : public Value
 {
 private:
     
@@ -23,8 +27,16 @@ public:
     
     //create a new anonymous table on the stack
     static Table* const create(const Context& ctx);
+    
     //load a table from the top of the stack
-    static Table* const load(const Context& ctx)
+    static Table* const load(const Context& ctx);
+    
+    //set metatable
+    //setMetaTable (const Table& tbl)
+    
+    //store userdata
+    //store string
+    //store number
 };
     
     

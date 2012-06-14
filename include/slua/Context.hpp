@@ -3,7 +3,7 @@
 */
 #pragma once
 #ifndef __SLUA_CONTEXT_HPP__
-#define __SLUA CONTEXT_HPP__
+#define __SLUA_CONTEXT_HPP__
 
 struct lua_State;
 
