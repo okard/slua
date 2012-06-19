@@ -3,7 +3,7 @@
 */
 #pragma once
 #ifndef __SLUA_EXCEPTION_HPP__
-#define __SLUA EXCEPTION_HPP__
+#define __SLUA_EXCEPTION_HPP__
 
 #include <exception>
 
