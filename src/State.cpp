@@ -17,7 +17,8 @@ using namespace slua;
 * Creates a new State
 */
 State::State()
-    : state_(luaL_newstate())
+    : state_(luaL_newstate()),
+	  ctx_(state_)
 {
     luaL_openlibs(state_);
 }
@@ -66,4 +67,12 @@ State::operator lua_State* const()
 lua_State* const State::getState() const
 {
     return state_;
+}
+
+/**
+* Get the default context
+*/
+Context& State::getContext()
+{
+	return ctx_;
 }

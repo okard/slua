@@ -10,7 +10,7 @@ fi
 cd build
 
 #create make files with cmake
-cmake -DCMAKE_BUILD_TYPE=Debug  -G "Unix Makefiles" ..
+cmake -DCMAKE_BUILD_TYPE=Debug  -G "Ninja" ..
 
 #make program
-make
+ninja

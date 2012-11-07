@@ -5,7 +5,11 @@
 #ifndef __SLUA_STATE_HPP__
 #define __SLUA_STATE_HPP__
 
+#include "Context.hpp"
+
+
 struct lua_State;
+
 
 namespace slua {
 
@@ -19,6 +23,9 @@ class State
   private:
     /// the lua state
     lua_State* state_;
+    
+    /// default lua context
+    Context ctx_;
     
   public:
     /**
@@ -51,6 +58,11 @@ class State
     */
     lua_State* const getState() const;  
     
+    
+    /**
+    * Get the default context
+    */
+    Context& getContext();
     
     //ref to global table?
 };

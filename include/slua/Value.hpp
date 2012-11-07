@@ -17,17 +17,32 @@ public:
     */
     enum Type
     {
-        LUA_TYPE_STRING,
-        LUA_TYPE_TABLE,
-        LUA_TYPE_NUMBER
+		TYPE_NOTSET,
+		TYPE_NIL,
+		TYPE_BOOLEAN,
+		TYPE_NUMBER,
+        TYPE_STRING,
+        TYPE_TABLE,
+        TYPE_FUNCTION
+ 
+        //TYPE_USERDATA
+        //TYPE_LIGHTUSERDATA
+        //TYPE_THREAD
     };
     
 private:
     
+    /// The type of the value
     Type type_;
     
+    /// positive absolute index
+    int index_;
+    
+    
+    //context?
 public:
     
+    //virtual bool valid()
     
     Type getType();
 };

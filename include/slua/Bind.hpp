@@ -37,6 +37,8 @@ struct RegEntry
     const char *name;
     int(T::*mfunc)(lua_State*);
 };    
+
+//status struct?
     
 /**
 * 
@@ -57,12 +59,13 @@ private:
     Bind(const Bind&){}
     
 public:
-    
+    //context instead of lua_State
     
     template<class T>
     static void Class(lua_State *L)
     {
-        
+        //register constructor
+        //register metatable 
     }
     
     template<class T>
@@ -71,12 +74,24 @@ public:
         
     }
     
-    //BindClass
-    //BindObject
+    
     //BindFunction
     //BindVariable
     
 private:
+    template<class T>
+    static int ObjectCallDispatch(lua_State *L)
+    {
+		//get obj, function_index
+		
+		//int i;
+		//get(&i, &obj, T::className)
+		
+		//T** obj = static_cast<T**>(luaL_checkudata(L, -1, T::className));
+		//return ((*obj)->*(T::Register[i].mfunc))(L);
+	}
+    
+    
     
     
 };

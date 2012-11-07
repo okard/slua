@@ -78,3 +78,33 @@ int Context::stackCount() const
 {
     return lua_gettop (state_);
 }
+
+
+void Context::get(Value& val, int index)
+{
+	switch(lua_type (state_, index))
+	{
+		case LUA_TNIL: 
+			break;
+		case LUA_TNUMBER: break; 
+		case LUA_TBOOLEAN: break;
+		case LUA_TSTRING: break; 
+		case LUA_TTABLE: break; 
+		case LUA_TFUNCTION: break; 
+		case LUA_TUSERDATA: break; 
+		case LUA_TTHREAD: break;
+		case LUA_TLIGHTUSERDATA: break;
+		//default: //error
+	}
+}
+
+// LUA_REGISTRYINDEX is a table
+
+
+//Whenever Lua calls C, the called function gets a new stack, which is independent of previous stacks 
+//and of stacks of C functions that are still active. This stack initially contains any arguments to 
+//the C function and it is where the C function pushes its results to be returned to the caller (see lua_CFunction). 
+
+// Instead, they can refer to any element in the stack by using an index: A positive index represents 
+// an absolute stack position (starting at 1); a negative index represents an offset relative to the
+// top of the stack.

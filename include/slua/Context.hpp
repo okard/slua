@@ -5,6 +5,8 @@
 #ifndef __SLUA_CONTEXT_HPP__
 #define __SLUA_CONTEXT_HPP__
 
+#include "Value.hpp"
+
 struct lua_State;
 
 namespace slua {
@@ -64,22 +66,40 @@ public:
     */
     int stackCount() const; 
     
-
-    //Push-Methods
-    //* String
-    //* Function
+    //lua_checkstack
+    
+    //lua_pop
+        
+    //lua_remove
+    //lua_replace
     
     
     //Get-Methods
     //* Number
     //* String
+    void get(Value& val, int index = 0);
+    
+
+    //Push-Methods
+    //-------------
+    //void lua_pushboolean (lua_State *L, int b);
+    //void lua_pushcclosure (lua_State *L, lua_CFunction fn, int n);
+    //void lua_pushcfunction (lua_State *L, lua_CFunction f);
+    //const char *lua_pushfstring (lua_State *L, const char *fmt, ...);
+    //void lua_pushinteger (lua_State *L, lua_Integer n);
+    //void lua_pushlightuserdata (lua_State *L, void *p);
+    //void lua_pushliteral (lua_State *L, const char *s);
+    //void lua_pushlstring (lua_State *L, const char *s, size_t len);
+    //void lua_pushnil (lua_State *L);
+    //void lua_pushnumber (lua_State *L, lua_Number n);
+    //void lua_pushstring (lua_State *L, const char *s);
+	//int lua_pushthread (lua_State *L);
+	//void lua_pushvalue (lua_State *L, int index);
+	//const char *lua_pushvfstring (lua_State *L, const char *fmt, va_list argp);
     
     //Call
     
-    //Create-Methods
-    //* CreateTable
-    
-    
+
     //LoadScript?
 };
 

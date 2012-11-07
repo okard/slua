@@ -16,8 +16,9 @@ class Table : public Value
 {
 private:
     
-    int ref_; //int luaL_ref (lua_State *L, int t);
+    //metatable flag
     
+    int ref_; //int luaL_ref (lua_State *L, int t);
     
     Table();
     ~Table();
@@ -30,6 +31,17 @@ public:
     
     //load a table from the top of the stack
     static Table* const load(const Context& ctx);
+    
+    //create metable
+    static Table* const createMetaTable(const Context& ctx);
+    
+    
+    void setTable(int index);
+    
+    //validate 
+    //int lua_setmetatable (lua_State *L, int index);
+    
+    //lua_settable
     
     //set metatable
     //setMetaTable (const Table& tbl)

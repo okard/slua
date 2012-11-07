@@ -2,9 +2,26 @@
 #ifndef __SLUA_DEBUG_HPP__
 #define __SLUA_DEBUG_HPP__
 
+#include "Context.hpp"
+
 namespace slua {
+	
+struct lua_Debug;
+
+	
+class Debugger
+{
+private:
+	lua_Debug* debug_;
+	Context& ctx_;
+public:	
+
+	Debugger(Context& ctx);
+	~Debugger();
+
+};
  
-//debugging function
+
     
     
 }
