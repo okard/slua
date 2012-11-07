@@ -35,6 +35,8 @@ public:
     //create metable
     static Table* const createMetaTable(const Context& ctx);
     
+    //get the registry table
+    //static Table* const getRegistryTable(const Context& ctx)
     
     void setTable(int index);
     

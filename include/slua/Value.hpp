@@ -3,6 +3,8 @@
 #ifndef __SLUA_VALUE__
 #define __SLUA_VALUE__
 
+#include "Context.hpp"
+
 
 namespace slua {
  
@@ -24,10 +26,9 @@ public:
         TYPE_STRING,
         TYPE_TABLE,
         TYPE_FUNCTION
- 
-        //TYPE_USERDATA
-        //TYPE_LIGHTUSERDATA
-        //TYPE_THREAD
+        TYPE_USERDATA,
+        TYPE_LIGHTUSERDATA,
+        TYPE_THREAD
     };
     
 private:
@@ -38,13 +39,18 @@ private:
     /// positive absolute index
     int index_;
     
-    
-    //context?
+    //Context& context?
 public:
+
+	Value();
+	Value(Context& context);
+	~Value();
     
-    //virtual bool valid()
+    virtual bool valid();
     
     Type getType();
+    
+    int getIndex();
 };
     
     

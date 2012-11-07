@@ -76,3 +76,15 @@ Context& State::getContext()
 {
 	return ctx_;
 }
+
+
+//register panic function:
+//lua_atpanic
+//lua_CFunction lua_atpanic (lua_State *L, lua_CFunction panicf);
+//using debugger?
+
+/*
+Sets a new panic function and returns the old one.
+If an error happens outside any protected environment, Lua calls a panic function and then calls exit(EXIT_FAILURE), thus exiting the host application. Your panic function can avoid this exit by never returning (e.g., doing a long jump).
+The panic function can access the error message at the top of the stack. 
+*/
