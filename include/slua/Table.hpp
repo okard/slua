@@ -26,19 +26,11 @@ private:
 public:
     //create a table and assign to name
     
-    //create a new anonymous table on the stack
-    static Table* const create(const Context& ctx);
-    
-    //load a table from the top of the stack
-    static Table* const load(const Context& ctx);
-    
-    //create metable
-    static Table* const createMetaTable(const Context& ctx);
     
     //get the registry table
     //static Table* const getRegistryTable(const Context& ctx)
     
-    void setTable(int index);
+    void setField(int index);
     
     //validate 
     //int lua_setmetatable (lua_State *L, int index);

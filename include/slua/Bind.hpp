@@ -70,8 +70,12 @@ public:
     //context instead of lua_State
     
     template<class T>
-    static void Class(lua_State *L)
+    static void Class(Context& ctx)
     {
+		registerMetaTable<T>(ctx);
+		
+		
+		
         //register constructor
         //register metatable 
     }
@@ -93,13 +97,14 @@ private:
 	* Register the class metatable to registry
 	*/
 	template<class T>
-	static void registerMetaTable()
+	static void registerMetaTable(Context& ctx)
 	{
 		static bool registered = false;
 		if(registered)
 			return;
 			
 		//register all required metatable function
+		
 		
 			
 		registered = true;
@@ -116,12 +121,14 @@ private:
 		
 		//register functions
 		
-		//register metatable
+		//set metatable
+		
+		
 			//what when gc disabled?
 		
 	}
 
-
+	//------------------------------------------------------------------
 	//-- Calls from lua code:
 	
 	/**

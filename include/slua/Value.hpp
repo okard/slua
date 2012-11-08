@@ -20,6 +20,7 @@ public:
     {
 		TYPE_VALUE, //variable type
 		
+		//Fixed types
 		TYPE_NIL,
 		TYPE_BOOLEAN,
 		TYPE_NUMBER,
@@ -34,23 +35,49 @@ public:
 private:
     
     /// The type of the value
-    Type type_;
+    const Type type_;
     
     /// positive absolute index
     int index_;
     
+    /// lua state
+    const lua_State* state_;
+    
 public:
 
+	/**
+	* Creates a dynamic value type
+	*/
 	Value();
-
-	Value(const lua_State* const state);
 	
+	/**
+	* Create a value for type
+	*/
+	Value(Type type);
+
+	/**
+	* Destructor
+	*/
 	~Value();
-    
+	
+	/**
+	* Assign a lua stack object to value
+	*/
+	virtual void pull(const lua_State* const state, int index);
+	
+	/**
+	* Is this value valid?
+	*/
     virtual bool valid() const;
     
+    /**
+    * Get Value Type
+    */
     Type getType() const;
     
+    /**
+    * Get index position
+    */
     int getIndex() const;
 };
     
