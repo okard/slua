@@ -3,8 +3,7 @@
 #ifndef __SLUA_VALUE__
 #define __SLUA_VALUE__
 
-#include "Context.hpp"
-
+struct lua_State;
 
 namespace slua {
  
@@ -19,13 +18,14 @@ public:
     */
     enum Type
     {
-		TYPE_NOTSET,
+		TYPE_VALUE, //variable type
+		
 		TYPE_NIL,
 		TYPE_BOOLEAN,
 		TYPE_NUMBER,
         TYPE_STRING,
         TYPE_TABLE,
-        TYPE_FUNCTION
+        TYPE_FUNCTION,
         TYPE_USERDATA,
         TYPE_LIGHTUSERDATA,
         TYPE_THREAD
@@ -39,18 +39,19 @@ private:
     /// positive absolute index
     int index_;
     
-    //Context& context?
 public:
 
 	Value();
-	Value(Context& context);
+
+	Value(const lua_State* const state);
+	
 	~Value();
     
-    virtual bool valid();
+    virtual bool valid() const;
     
-    Type getType();
+    Type getType() const;
     
-    int getIndex();
+    int getIndex() const;
 };
     
     

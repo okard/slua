@@ -1,0 +1,2 @@
+
+#include <slua/Bind.hpp>

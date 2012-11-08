@@ -19,7 +19,6 @@ extern "C"
 namespace slua {
         
 /**
-* 
     class Foo
     {
     static const slua::RegEntry<Foo> Register[];
@@ -37,6 +36,15 @@ struct RegEntry
     const char *name;
     int(T::*mfunc)(lua_State*);
 };    
+
+
+template<class T>
+struct RegStatus
+{
+	const char* className;
+	const RegEntry<T> Register[];
+}; 
+
 
 //status struct?
     
@@ -79,8 +87,76 @@ public:
     //BindVariable
     
 private:
+	//static const char* REFFIELD = "__ref";
+
+	/**
+	* Register the class metatable to registry
+	*/
+	template<class T>
+	static void registerMetaTable()
+	{
+		static bool registered = false;
+		if(registered)
+			return;
+			
+		//register all required metatable function
+		
+			
+		registered = true;
+	}
+
+	/**
+	* Pushes a instance table for class type on lua stack
+	*/
+	template<class T>
+	void pushInstanceTable(lua_State *L, T* const instance)
+	{
+		//new table
+		//register reference
+		
+		//register functions
+		
+		//register metatable
+			//what when gc disabled?
+		
+	}
+
+
+	//-- Calls from lua code:
+	
+	/**
+	* Create a new class instance as table 
+	*/
+	template<class T>
+    static int lua_constructor(lua_State *L)
+    {
+		pushInstanceTable<T>(L, new T);
+		return 1;
+	}
+    
+    /**
+    * GC call for a class
+    */
     template<class T>
-    static int ObjectCallDispatch(lua_State *L)
+    static int lua_gc(lua_State *L)
+    {
+		
+		return 0;
+	}
+	
+	/**
+	* Protect metatable and class instance pointer from changes
+	*/
+    static int lua_protect(lua_State *L)
+    {
+		return 0;
+	}
+	
+	/**
+	* Dispatches the function
+	*/
+	template<class T>
+    static int lua_dispatch(lua_State *L)
     {
 		//get obj, function_index
 		
@@ -89,11 +165,10 @@ private:
 		
 		//T** obj = static_cast<T**>(luaL_checkudata(L, -1, T::className));
 		//return ((*obj)->*(T::Register[i].mfunc))(L);
-	}
-    
-    
-    
+	}  
     
 };
     
 }
+
+#endif // __SLUA_BIND_HPP__

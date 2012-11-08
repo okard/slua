@@ -5,10 +5,12 @@ using namespace slua;
 
 
 Value::Value()
+	: type_(TYPE_VALUE), index_(0)
 {
 }
 
-Value::Value(Context& context)
+
+Value::Value(const lua_State* const state)
 {
 }
 
@@ -16,7 +18,7 @@ Value::~Value()
 {
 }
 
-bool Value::valid()
+bool Value::valid() const
 {
 	if(index_ <= 0)
 		return false;
@@ -25,16 +27,18 @@ bool Value::valid()
 	{
 		//validate index for context
 	}
+	
+	return true;
 }
 
 
-Value::Type Value::getType()
+Value::Type Value::getType() const
 {
 	return type_;
 }
 
 
-int Value::getIndex()
+int Value::getIndex() const
 {
 	//assert index_ >= 1
 	return index_;
