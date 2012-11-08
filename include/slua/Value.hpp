@@ -37,6 +37,7 @@ private:
     /// The type of the value
     const Type type_;
     
+protected:
     /// positive absolute index
     int index_;
     
@@ -78,7 +79,7 @@ public:
     /**
     * Get index position
     */
-    int getIndex() const;
+    inline int getIndex() const;
 };
     
     

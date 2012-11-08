@@ -10,6 +10,12 @@
 struct lua_State;
 
 namespace slua {
+	
+	
+//TODO with available context?
+typedef int (*LuaFunction) (lua_State *L);
+  
+  
 
 /**
 * Higher Level Access to LuaState
@@ -55,21 +61,16 @@ public:
     * Assign operator
     */
     Context& operator=(const Context& ctx);
-    
-    /**
-    * validate the lua stack
-    */
-    bool validate();
-    
-    /**
-    * validate grow of lua lua stack
-    */
-    bool validate(unsigned int grow);
 
     /**
     * get stack count
     */
     int stackCount() const; 
+    
+    /**
+    * get the grown stack difference
+    */
+    int stackGrow() const;
     
     /**
     * Reset stack
@@ -81,18 +82,41 @@ public:
     */
     operator lua_State* const ();
     
+    /**
+    * Calculate absolute index
+    */
+    inline int absIndex(int index);
+    
+    /**
+	* Pop elements
+	*/
+    void pop(int count = 0);
+    
+    ////////////////////////////////////////////////////////////////////////////
+    // Push API
+    ////////////////////////////////////////////////////////////////////////////
+    void pushNil();
+    void pushBool(bool value);
+    void pushInteger(int value);
+    void pushStringLiteral(const char* str);
+    void pushString(const char* str);
+    
+    void pushPtr(void* ptr);
+    void pushFunc(LuaFunction fn);
+    void pushClojure(LuaFunction fn, int args);
+    
+    void pushTable();
+    bool pushMetaTable(const char* key);
+    
+    ////////////////////////////////////////////////////////////////////////////
+    // Pull API
+    ////////////////////////////////////////////////////////////////////////////
     
     
-    //pushMetaTable();
-    //pull(Table& table);
-    
-    
-    //pull
-    
-    //create -> pushValue and makes a pull on stack top & pull
-    
-
     //LoadScript?
+    
+private:
+	inline void checkValid() const;
 };
 
 } //end namespace slua

@@ -20,17 +20,23 @@ private:
     
     int ref_; //int luaL_ref (lua_State *L, int t);
     
-    Table();
-    ~Table();
+
     
 public:
-    //create a table and assign to name
-    
-    
-    //get the registry table
-    //static Table* const getRegistryTable(const Context& ctx)
-    
-    void setField(int index);
+    Table();
+    ~Table();
+
+	virtual void pull(const lua_State* const state, int index);
+	
+	//pushMetaTable()
+	//setMetaTable()
+	
+	
+	
+	//assign
+	
+
+    //void setField(int index);
     
     //validate 
     //int lua_setmetatable (lua_State *L, int index);

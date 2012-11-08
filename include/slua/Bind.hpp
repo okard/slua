@@ -5,16 +5,9 @@
 #ifndef __SLUA_BIND_HPP__
 #define __SLUA_BIND_HPP__
 
-extern "C" 
-{
-    #include <lua.h>
-    #include <lualib.h>
-    #include <lauxlib.h>
-}
-
 #include "Exception.hpp"
 #include "Context.hpp"
-
+#include "Table.hpp"
 
 namespace slua {
         
@@ -103,6 +96,16 @@ private:
 		if(registered)
 			return;
 			
+		if(!ctx.pushMetaTable(T::Bind.className))
+			throw LuaException("Already registered metatable with this name");
+		
+		Table meta;
+		meta.pull(ctx, ctx.absIndex(-1));
+		ctx.pushStringLiteral("_gc");
+		ctx.pushFunc(&Bind::lua_gc<T>);
+		
+		//assign field
+		
 		//register all required metatable function
 		
 		

@@ -2,14 +2,16 @@
 
 #include <slua/Context.hpp>
 
-using namespace slua;
-
 //Lua Includes
 extern "C" {
     #include <lua.h>
     #include <lauxlib.h>
     #include <lualib.h>
 }
+
+#include <slua/Exception.hpp>
+
+using namespace slua;
 
 
 /**
@@ -68,20 +70,14 @@ Context& Context::operator=(const Context& ctx)
 	return *this;
 }
 
-/**
-* validate the lua stack
-*/
-bool Context::validate()
-{
-    return (stacksize_ == this->stackCount());
-}
 
 /**
-* validate grow of lua lua stack
+* get the grown stack difference
 */
-bool Context::validate(unsigned int grow)
+int Context::stackGrow() const
 {
-    return (stacksize_ + grow == this->stackCount());
+	checkValid();
+	return stackCount() - stacksize_;
 }
 
 /**
@@ -92,11 +88,13 @@ int Context::stackCount() const
     return lua_gettop (state_);
 }
 
+
 /**
 * Reset to beginning
 */
 void Context::stackReset()
 {
+	checkValid();
 	lua_settop(state_, stacksize_);
 }
 
@@ -106,10 +104,114 @@ void Context::stackReset()
 Context::operator lua_State* const ()
 {
 	if(state_ == nullptr)
-		throw "Error";
+		throw LuaException("Context is not assigned to a lua state");
 		
 	return state_;
 }
+
+/**
+* Pop elements
+*/
+void Context::pop(int count)
+{
+	if(count <= 0)
+		throw LuaException("Only positive numbers are allowed");
+		
+	checkValid();
+	
+	if(stackGrow() > count)
+		throw LuaException("Want to pop more elements as available");
+	
+	lua_pop(state_, count);
+}
+
+/**
+* Check if the current context is valid
+*/
+void Context::checkValid() const
+{
+	if(state_ == nullptr)
+		throw LuaException("Context is not assigned to a lua state");
+	
+	if(stackCount() < stacksize_)
+		throw LuaException("Current stack count is below context count");
+}
+
+/**
+* Calculate absolute index
+*/
+int Context::absIndex(int index)
+{
+	if(index > 0)
+		return index;
+		
+	return index + stackCount();
+}
+
+void Context::pushNil()
+{
+	checkValid();
+	lua_pushnil(state_);
+}
+
+void Context::pushBool(bool value)
+{
+	checkValid();
+	lua_pushboolean (state_, value);
+}
+
+void Context::pushInteger(int value)
+{
+	checkValid();
+	lua_pushinteger (state_, value);
+}
+
+void Context::pushStringLiteral(const char* str)
+{
+	checkValid();
+	//lua_pushliteral(state_, str);
+	throw LuaException("Not yet implemented");
+}
+
+void Context::pushString(const char* str)
+{
+	checkValid();
+	lua_pushstring(state_, str);
+}
+
+void Context::pushPtr(void* ptr)
+{
+	checkValid();
+	lua_pushlightuserdata(state_, ptr);
+}
+
+void Context::pushFunc(LuaFunction fn)
+{
+	checkValid();
+	lua_pushcfunction(state_, fn);
+}
+
+void Context::pushClojure(LuaFunction fn, int args)
+{
+	checkValid();
+	lua_pushcclosure(state_, fn, args);
+}
+
+void Context::pushTable()
+{
+	checkValid();
+	lua_createtable(state_, 0, 0);
+}
+
+//return created true/false
+bool Context::pushMetaTable(const char* key)
+{
+	checkValid();
+	return luaL_newmetatable (state_, key);
+}
+
+
+
 
 
 /*
@@ -163,18 +265,24 @@ void Context::get(Value& val, int index)
     * 
     //Push-Methods
     //-------------
+    * 
+    //void lua_pushnil (lua_State *L);
     //void lua_pushboolean (lua_State *L, int b);
-    //void lua_pushcclosure (lua_State *L, lua_CFunction fn, int n);
-    //void lua_pushcfunction (lua_State *L, lua_CFunction f);
-    //const char *lua_pushfstring (lua_State *L, const char *fmt, ...);
     //void lua_pushinteger (lua_State *L, lua_Integer n);
-    //void lua_pushlightuserdata (lua_State *L, void *p);
+    
+    //void lua_pushnumber (lua_State *L, lua_Number n);
+    
     //void lua_pushliteral (lua_State *L, const char *s);
     //void lua_pushlstring (lua_State *L, const char *s, size_t len);
-    //void lua_pushnil (lua_State *L);
-    //void lua_pushnumber (lua_State *L, lua_Number n);
-    //void lua_pushstring (lua_State *L, const char *s);
+	//void lua_pushstring (lua_State *L, const char *s);
+    //const char *lua_pushfstring (lua_State *L, const char *fmt, ...);
+    //const char *lua_pushvfstring (lua_State *L, const char *fmt, va_list argp); 
+    
+    //void lua_pushcclosure (lua_State *L, lua_CFunction fn, int n);
+    //void lua_pushcfunction (lua_State *L, lua_CFunction f);
+    //void lua_pushlightuserdata (lua_State *L, void *p);
+
 	//int lua_pushthread (lua_State *L);
 	//void lua_pushvalue (lua_State *L, int index);
-	//const char *lua_pushvfstring (lua_State *L, const char *fmt, va_list argp);   
+	 
 */
