@@ -65,12 +65,14 @@ public:
     template<class T>
     static void Class(Context& ctx)
     {
+		//register metatable
 		registerMetaTable<T>(ctx);
 		
-		
-		
-        //register constructor
-        //register metatable 
+		//register contructor function
+		Table global;
+		ctx.pullGlobalTable(global);
+		ctx.pushFunc(&Bind::lua_constructor<T>);
+		global.assignField(T::Bind.className);
     }
     
     template<class T>
@@ -100,14 +102,17 @@ private:
 			throw LuaException("Already registered metatable with this name");
 		
 		Table meta;
-		meta.pull(ctx, ctx.absIndex(-1));
+		ctx.pullTable(meta, -1);
 		ctx.pushStringLiteral("_gc");
 		ctx.pushFunc(&Bind::lua_gc<T>);
+		meta.assignField();
 		
-		//assign field
+		//register _newindex
+		//register _metatable = false
 		
-		//register all required metatable function
-		
+		//pops the metatable
+		//ctx.pop(meta)
+		ctx.pop(1);
 		
 			
 		registered = true;
@@ -150,7 +155,15 @@ private:
     template<class T>
     static int lua_gc(lua_State *L)
     {
+		Context ctx(L);
+		//if(ctx.stackCount() == 1)
+		//
 		
+		//argument is a table?
+		//get ref field
+		
+		auto obj = static_cast<T*>(ctx.pullPtr(1));
+		delete obj;
 		return 0;
 	}
 	
@@ -159,6 +172,8 @@ private:
 	*/
     static int lua_protect(lua_State *L)
     {
+		
+		
 		return 0;
 	}
 	

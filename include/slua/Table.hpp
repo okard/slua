@@ -5,9 +5,7 @@
 #ifndef __SLUA_TABLE_HPP__
 #define __SLUA_TABLE_HPP__
 
-#include "Context.hpp"
 #include "Value.hpp"
-
 
 namespace slua {
   
@@ -28,6 +26,30 @@ public:
 
 	virtual void pull(const lua_State* const state, int index);
 	
+	/**
+	* Pops 2 value from stack
+	* on top of stack the value
+	* under the value the key
+	*/
+	void assignField();
+	
+	/**
+	* Assign value fom top of the stack
+	*/
+	void assignField(const char* key);
+	
+	/**
+	* Key on stack top
+	* pushes the field of the table
+	*/
+	void pushField();
+	
+	/**
+	* Pushes a table field onto stack
+	*/
+	void pushField(const char* key);
+	
+
 	//pushMetaTable()
 	//setMetaTable()
 	

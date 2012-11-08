@@ -169,8 +169,8 @@ void Context::pushInteger(int value)
 void Context::pushStringLiteral(const char* str)
 {
 	checkValid();
-	//lua_pushliteral(state_, str);
-	throw LuaException("Not yet implemented");
+	//from macro lua_pushliteral
+	lua_pushlstring(state_, str, (sizeof(str)/sizeof(char))-1);
 }
 
 void Context::pushString(const char* str)
@@ -211,7 +211,35 @@ bool Context::pushMetaTable(const char* key)
 }
 
 
+void Context::pullGlobalTable(Table& tbl)
+{
+	/*lua 5.2
+	 pushNumber(LUA_RIDX_GLOBALS)
+	 lua_gettable(lua_State *L, LUA_REGISTRYINDEX);
+	*/
+	tbl.pull(state_, LUA_GLOBALSINDEX);
+}
 
+
+/**
+* Pull a table from index
+*/
+Table& Context::pullTable(Table& table, int index)
+{
+	table.pull(*this, absIndex(index));
+	return table;
+}
+
+/**
+* pull a ptr from index
+*/
+const void* Context::pullPtr(int index)
+{
+	auto ptr = lua_topointer(state_, index);
+	if(ptr == NULL)
+		throw LuaException("Is not a pointer");
+	return ptr;
+}
 
 
 /*

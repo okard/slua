@@ -6,6 +6,7 @@
 #define __SLUA_CONTEXT_HPP__
 
 #include "Value.hpp"
+#include "Table.hpp"
 
 struct lua_State;
 
@@ -112,6 +113,20 @@ public:
     // Pull API
     ////////////////////////////////////////////////////////////////////////////
     
+    /**
+    * Pull the global table
+    */
+    void pullGlobalTable(Table& tbl);
+    
+    /**
+    * Pull a table from index
+    */
+    Table& pullTable(Table& table, int index);
+    
+    /**
+    * pull a ptr from index
+    */
+    const void* pullPtr(int index);
     
     //LoadScript?
     
