@@ -35,7 +35,7 @@ template<class T>
 struct RegStatus
 {
 	const char* className;
-	const RegEntry<T> Functions[];
+	const RegEntry<T> Functions[5];
 }; 
 
 
@@ -132,7 +132,7 @@ private:
 	* TODO luaState -> Context
 	*/
 	template<class T>
-	void pushInstanceTable(lua_State *L, T* const instance)
+	static void pushInstanceTable(lua_State *L, T* const instance)
 	{
 		Context ctx(L);
 		
@@ -176,7 +176,7 @@ private:
 	template<class T>
     static int lua_constructor(lua_State *L)
     {
-		pushInstanceTable<T>(L, new T);
+		pushInstanceTable<T>(L, new T());
 		return 1;
 	}
     
@@ -193,7 +193,7 @@ private:
 		//argument is a table?
 		//get ref field
 		
-		auto obj = static_cast<T*>(ctx.pullPtr(1));
+		auto obj = static_cast<const T*>(ctx.pullPtr(1));
 		delete obj;
 		return 0;
 	}
@@ -227,7 +227,7 @@ private:
 		
 		//get ref field
 		tbl.pushField("__ref");
-		T* obj = static_cast<T*>(ctx.pullPtr(-1));
+		auto obj = static_cast<T*>(const_cast<void*>(ctx.pullPtr(-1)));
 		
 		//call specific function
 		return (obj->*(T::Bind.Functions[funcIndex].mfunc))(ctx);	

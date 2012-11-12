@@ -86,13 +86,13 @@ public:
     /**
     * Calculate absolute index
     */
-    inline int absIndex(int index);
+    int absIndex(int index);
     
     /**
     * Get the index for c closure parameter
     * (upvalueindex)
     */
-    inline int upIndex(int index);
+    int upIndex(int index);
     
     /**
 	* Pop elements
