@@ -148,6 +148,18 @@ int Context::absIndex(int index)
 	return index + stackCount();
 }
 
+/**
+* Get the index for c closure parameter
+* (upvalueindex)
+*/
+int Context::upIndex(int index)
+{
+	if(index <= 0)
+		throw LuaException("Invalid value for index");
+		
+	return lua_upvalueindex(index);
+}
+
 void Context::pushNil()
 {
 	checkValid();
@@ -208,6 +220,15 @@ bool Context::pushMetaTable(const char* key)
 {
 	checkValid();
 	return luaL_newmetatable (state_, key);
+}
+
+/**
+* get an integer value
+*/
+int Context::pullInteger(int index)
+{
+	checkValid();
+	return lua_tointeger(state_, index);
 }
 
 
@@ -284,6 +305,8 @@ void Context::get(Value& val, int index)
 
 /* 
  * 
+	int luaL_error (lua_State *L, const char *fmt, ...);
+	* 
  *  //lua_checkstack
     
     //lua_pop

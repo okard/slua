@@ -75,6 +75,16 @@ void Table::pushField(const char* key)
 	lua_getfield (const_cast<lua_State*>(state_), index_, key);
 }
 
+/**
+* Assign the table on stack as metatable
+*/
+void Table::assignMetaTable()
+{
+	valid();
+	//TODO check value on top is a table?
+	lua_setmetatable(const_cast<lua_State*>(state_), index_);
+}
+
  //The thread environment (where global variables live) is always at pseudo-index LUA_GLOBALSINDEX.
  //The environment of the running C function is always at pseudo-index LUA_ENVIRONINDEX. 
 

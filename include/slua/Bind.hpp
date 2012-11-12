@@ -27,7 +27,7 @@ template<class T>
 struct RegEntry
 {
     const char *name;
-    int(T::*mfunc)(lua_State*);
+    int(T::*mfunc)(Context&);
 };    
 
 
@@ -62,6 +62,9 @@ private:
 public:
     //context instead of lua_State
     
+    /**
+    * Register a class for usage from lua
+    */
     template<class T>
     static void Class(Context& ctx)
     {
@@ -75,6 +78,9 @@ public:
 		global.assignField(T::Bind.className);
     }
     
+    /**
+    * Make a instance of an object available for lua
+    */
     template<class T>
     static void Object(lua_State *L, T* instance, const char* name)
     {
@@ -84,6 +90,8 @@ public:
     
     //BindFunction
     //BindVariable
+    
+    //PushObject
     
 private:
 	//static const char* REFFIELD = "__ref";
@@ -108,6 +116,7 @@ private:
 		meta.assignField();
 		
 		//register _newindex
+		
 		//register _metatable = false
 		
 		//pops the metatable
@@ -120,19 +129,41 @@ private:
 
 	/**
 	* Pushes a instance table for class type on lua stack
+	* TODO luaState -> Context
 	*/
 	template<class T>
 	void pushInstanceTable(lua_State *L, T* const instance)
 	{
+		Context ctx(L);
+		
 		//new table
-		//register reference
+		ctx.pushTable();
+		Table tbl;
+		ctx.pullTable(tbl, -1);
 		
-		//register functions
+		//assign reference
+		ctx.pushPtr(instance);
+		tbl.assignField("__ref");
 		
-		//set metatable
+		// assign functions
+		//TODO T::Bind.className
+		for (int i = 0; T::Register[i].name; i++) 
+		{
+			ctx.pushInteger(i);
+			ctx.pushClojure(&Bind::lua_dispatch<T>, 1);
+			tbl.assignField(T::Register[i].name);
+		}
+		
+		// Check for existing metatable and push it on stack
+		// TODO lua error
+		if(ctx.pushMetaTable(T::Bind.className))
+			throw LuaException("MetaTable was not created for this type");
+		
+		//assign metatable
+		tbl.assignMetaTable();
 		
 		
-			//what when gc disabled?
+		//what when gc disabled?
 		
 	}
 
@@ -172,6 +203,7 @@ private:
 	*/
     static int lua_protect(lua_State *L)
     {
+		//Move to Bind.cpp
 		
 		
 		return 0;
@@ -183,13 +215,22 @@ private:
 	template<class T>
     static int lua_dispatch(lua_State *L)
     {
-		//get obj, function_index
+		Context ctx(L);
 		
-		//int i;
-		//get(&i, &obj, T::className)
+		//get the closure value for functions index
+		int funcIndex = ctx.pullInteger(ctx.upIndex(1));
 		
-		//T** obj = static_cast<T**>(luaL_checkudata(L, -1, T::className));
-		//return ((*obj)->*(T::Register[i].mfunc))(L);
+		//get the table aka 'self' 
+		//it is the first parameter
+		Table tbl;
+		ctx.pullTable(tbl, 1);
+		
+		//get ref field
+		tbl.pushField("__ref");
+		T* obj = static_cast<T*>(ctx.pullPtr(-1));
+		
+		//call specific function
+		return (obj->*(T::Register[funcIndex].mfunc))(ctx);	
 	}  
     
 };

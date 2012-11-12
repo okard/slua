@@ -49,6 +49,10 @@ public:
 	*/
 	void pushField(const char* key);
 	
+	/**
+	* Assign the table on stack as metatable
+	*/
+	void assignMetaTable();
 
 	//pushMetaTable()
 	//setMetaTable()

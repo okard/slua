@@ -89,6 +89,12 @@ public:
     inline int absIndex(int index);
     
     /**
+    * Get the index for c closure parameter
+    * (upvalueindex)
+    */
+    inline int upIndex(int index);
+    
+    /**
 	* Pop elements
 	*/
     void pop(int count = 0);
@@ -114,6 +120,17 @@ public:
     ////////////////////////////////////////////////////////////////////////////
     
     /**
+    * get an integer value
+    */
+    int pullInteger(int index);
+    
+    /**
+    * pull a ptr from index
+    */
+    const void* pullPtr(int index);
+    
+    
+    /**
     * Pull the global table
     */
     void pullGlobalTable(Table& tbl);
@@ -123,10 +140,7 @@ public:
     */
     Table& pullTable(Table& table, int index);
     
-    /**
-    * pull a ptr from index
-    */
-    const void* pullPtr(int index);
+
     
     //LoadScript?
     
