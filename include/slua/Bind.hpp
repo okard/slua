@@ -35,7 +35,7 @@ template<class T>
 struct RegStatus
 {
 	const char* className;
-	const RegEntry<T> Register[];
+	const RegEntry<T> Functions[];
 }; 
 
 
@@ -147,11 +147,11 @@ private:
 		
 		// assign functions
 		//TODO T::Bind.className
-		for (int i = 0; T::Register[i].name; i++) 
+		for (int i = 0; T::Bind.Functions[i].name; i++) 
 		{
 			ctx.pushInteger(i);
 			ctx.pushClojure(&Bind::lua_dispatch<T>, 1);
-			tbl.assignField(T::Register[i].name);
+			tbl.assignField(T::Bind.Functions[i].name);
 		}
 		
 		// Check for existing metatable and push it on stack
@@ -230,7 +230,7 @@ private:
 		T* obj = static_cast<T*>(ctx.pullPtr(-1));
 		
 		//call specific function
-		return (obj->*(T::Register[funcIndex].mfunc))(ctx);	
+		return (obj->*(T::Bind.Functions[funcIndex].mfunc))(ctx);	
 	}  
     
 };
