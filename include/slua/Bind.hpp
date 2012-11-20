@@ -24,7 +24,7 @@ namespace slua {
     };
 */
 template<class T>
-struct RegEntry
+struct BindFunction
 {
     const char *name;
     int(T::*mfunc)(Context&);
@@ -32,10 +32,11 @@ struct RegEntry
 
 
 template<class T>
-struct RegStatus
+struct BindStatus
 {
 	const char* className;
-	const RegEntry<T> Functions[5];
+	bool metatableRegisted;
+	const BindFunction<T>* Functions;
 }; 
 
 
@@ -60,8 +61,6 @@ public:
 
 
 
-//status struct?
-    
 /**
 * 
 * slua::Bind::Class<Foo>(state);
@@ -96,7 +95,7 @@ public:
 		Table global;
 		ctx.pullGlobalTable(global);
 		ctx.pushFunc(&Bind::lua_constructor<T>);
-		global.assignField(T::Bind.className);
+		global.assignField(T::bindStatus.className);
     }
     
     /**
@@ -106,18 +105,24 @@ public:
     template<class T>
     static void Object(Context& ctx, T* instance, const char* name)
     {
+		registerMetaTable<T>(ctx);
+		
         LuaObject* lo = instance;
         lo->addReference();
+			
+		
     }
     
     /**
-    * Push a object
+    * Push a object ontp stack
     */ 
     template<class T>
     static void PushObject(Context& ctx, T* instance)
     {
+		registerMetaTable<T>(ctx);
+		
 		LuaObject* lo = instance;
-        lo->addReference();
+        lo->addReference();   
 	}
     
     
@@ -138,7 +143,7 @@ private:
 		if(registered)
 			return;
 			
-		if(!ctx.pushMetaTable(T::Bind.className))
+		if(!ctx.pushMetaTable(T::bindStatus.className))
 			throw LuaException("Already registered metatable with this name");
 		
 		Table meta;
@@ -155,7 +160,7 @@ private:
 		//ctx.pop(meta)
 		ctx.pop(1);
 		
-			
+		
 		registered = true;
 	}
 
@@ -179,16 +184,16 @@ private:
 		
 		// assign functions
 		//TODO T::Bind.className
-		for (int i = 0; T::Bind.Functions[i].name; i++) 
+		for (int i = 0; T::bindStatus.Functions[i].name; i++) 
 		{
 			ctx.pushInteger(i);
 			ctx.pushClojure(&Bind::lua_dispatch<T>, 1);
-			tbl.assignField(T::Bind.Functions[i].name);
+			tbl.assignField(T::bindStatus.Functions[i].name);
 		}
 		
 		// Check for existing metatable and push it on stack
 		// TODO lua error
-		if(ctx.pushMetaTable(T::Bind.className))
+		if(ctx.pushMetaTable(T::bindStatus.className))
 			throw LuaException("MetaTable was not created for this type");
 		
 		//assign metatable
@@ -264,7 +269,7 @@ private:
 		auto obj = static_cast<T*>(const_cast<void*>(ctx.pullPtr(-1)));
 		
 		//call specific function
-		return (obj->*(T::Bind.Functions[funcIndex].mfunc))(ctx);	
+		return (obj->*(T::bindStatus.Functions[funcIndex].mfunc))(ctx);	
 	}  
     
 };
