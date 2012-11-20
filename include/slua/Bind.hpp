@@ -131,13 +131,13 @@ public:
     
     
 private:
-	//static const char* REFFIELD = "__ref";
-
+	static const char* REFFIELD;
+	
 	/**
 	* Register the class metatable to registry
 	*/
 	template<class T>
-	static void registerMetaTable(Context& ctx)
+	inline static void registerMetaTable(Context& ctx)
 	{
 		static bool registered = false;
 		if(registered)
@@ -179,11 +179,11 @@ private:
 		ctx.pullTable(tbl, -1);
 		
 		//assign reference
-		ctx.pushPtr(instance);
-		tbl.assignField("__ref");
+		LuaObject* obj = instance;
+		ctx.pushPtr(obj);
+		tbl.assignField(REFFIELD);
 		
 		// assign functions
-		//TODO T::Bind.className
 		for (int i = 0; T::bindStatus.Functions[i].name; i++) 
 		{
 			ctx.pushInteger(i);
@@ -192,7 +192,7 @@ private:
 		}
 		
 		// Check for existing metatable and push it on stack
-		// TODO lua error
+		// TODO lua error not an exception
 		if(ctx.pushMetaTable(T::bindStatus.className))
 			throw LuaException("MetaTable was not created for this type");
 		
@@ -230,7 +230,14 @@ private:
 		//if(ctx.stackCount() == 1)
 		//
 		//argument is a table?
+		//
 		//get ref field
+		/*
+		Table obj;
+		ctx.pullTable(obj, -1);
+		obj.pushField(REFFIELD);
+		*/
+		
 		auto ptr = const_cast<void*>(ctx.pullPtr(1));
 		auto obj = static_cast<LuaObject*>(ptr);
 		obj->removeReference();
@@ -265,7 +272,7 @@ private:
 		ctx.pullTable(tbl, 1);
 		
 		//get ref field
-		tbl.pushField("__ref");
+		tbl.pushField(REFFIELD);
 		auto obj = static_cast<T*>(const_cast<void*>(ctx.pullPtr(-1)));
 		
 		//call specific function
@@ -273,6 +280,7 @@ private:
 	}  
     
 };
+
     
 }
 

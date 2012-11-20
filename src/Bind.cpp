@@ -9,9 +9,11 @@ extern "C" {
     #include <lualib.h>
 }
 
-
-
 using namespace slua;
+
+
+const char* Bind::REFFIELD = "__ref";
+
 
 
 LuaObject::LuaObject()
