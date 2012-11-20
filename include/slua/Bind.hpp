@@ -39,6 +39,27 @@ struct RegStatus
 }; 
 
 
+/**
+* Basic Class for binding objects with refcounting memory management
+*/
+class LuaObject
+{
+private:
+		bool shareable_;
+		unsigned short refcount_;
+		
+public:
+	LuaObject();
+	~LuaObject();
+
+	void addReference();
+	void removeReference();
+	bool isShareable();
+	void markShareable();
+};
+
+
+
 //status struct?
     
 /**
@@ -80,18 +101,29 @@ public:
     
     /**
     * Make a instance of an object available for lua
+    * in the global table
     */
     template<class T>
-    static void Object(lua_State *L, T* instance, const char* name)
+    static void Object(Context& ctx, T* instance, const char* name)
     {
-        
+        LuaObject* lo = instance;
+        lo->addReference();
     }
+    
+    /**
+    * Push a object
+    */ 
+    template<class T>
+    static void PushObject(Context& ctx, T* instance)
+    {
+		LuaObject* lo = instance;
+        lo->addReference();
+	}
     
     
     //BindFunction
     //BindVariable
     
-    //PushObject
     
 private:
 	//static const char* REFFIELD = "__ref";
@@ -176,7 +208,9 @@ private:
 	template<class T>
     static int lua_constructor(lua_State *L)
     {
-		pushInstanceTable<T>(L, new T());
+		T* obj = new T();
+		LuaObject* lo = obj;
+		pushInstanceTable<T>(L, obj);
 		return 1;
 	}
     
@@ -187,14 +221,14 @@ private:
     static int lua_gc(lua_State *L)
     {
 		Context ctx(L);
+		
 		//if(ctx.stackCount() == 1)
 		//
-		
 		//argument is a table?
 		//get ref field
-		
-		auto obj = static_cast<const T*>(ctx.pullPtr(1));
-		delete obj;
+		auto ptr = const_cast<void*>(ctx.pullPtr(1));
+		auto obj = static_cast<LuaObject*>(ptr);
+		obj->removeReference();
 		return 0;
 	}
 	
