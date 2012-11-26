@@ -64,6 +64,8 @@ class State
     */
     Context& getContext();
     
+    //
+    
     //ref to global table?
 };
 

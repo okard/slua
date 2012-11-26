@@ -35,7 +35,9 @@ template<class T>
 struct BindStatus
 {
 	const char* className;
-	bool metatableRegisted;
+	bool metatableRegisted; //<- remove
+	//const BindFunction constructor;
+	//const BindFunction destructor;
 	const BindFunction<T>* Functions;
 }; 
 
@@ -46,8 +48,10 @@ struct BindStatus
 class LuaObject
 {
 private:
-		bool shareable_;
-		unsigned short refcount_;
+	bool shareable_;
+	unsigned short refcount_;
+	
+	//luaref
 		
 public:
 	LuaObject();
@@ -215,6 +219,9 @@ private:
     {
 		T* obj = new T();
 		LuaObject* lo = obj;
+		
+		//call constructor function
+		
 		pushInstanceTable<T>(L, obj);
 		return 1;
 	}
@@ -232,10 +239,13 @@ private:
 		//argument is a table?
 		//
 		//get ref field
+		
 		/*
 		Table obj;
 		ctx.pullTable(obj, -1);
 		obj.pushField(REFFIELD);
+		* 
+		//call destuctor function
 		*/
 		
 		auto ptr = const_cast<void*>(ctx.pullPtr(1));
