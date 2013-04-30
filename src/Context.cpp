@@ -238,7 +238,9 @@ void Context::pullGlobalTable(Table& tbl)
 	 pushNumber(LUA_RIDX_GLOBALS)
 	 lua_gettable(lua_State *L, LUA_REGISTRYINDEX);
 	*/
-	tbl.pull(state_, LUA_GLOBALSINDEX);
+	//pushglobaltable
+	
+	//tbl.pull(state_, LUA_GLOBALSINDEX);
 }
 
 
