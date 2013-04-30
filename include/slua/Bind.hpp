@@ -96,8 +96,11 @@ public:
 		registerMetaTable<T>(ctx);
 		
 		//register contructor function
+		
+		ctx.pushGlobalTable();
 		Table global;
-		ctx.pullGlobalTable(global);
+		global.setto(ctx, -1);
+		
 		ctx.pushFunc(&Bind::lua_constructor<T>);
 		global.assignField(T::bindStatus.className);
     }
@@ -151,7 +154,7 @@ private:
 			throw LuaException("Already registered metatable with this name");
 		
 		Table meta;
-		ctx.pullTable(meta, -1);
+		meta.setto(ctx, -1);
 		ctx.pushStringLiteral("_gc");
 		ctx.pushFunc(&Bind::lua_gc<T>);
 		meta.assignField();
@@ -180,7 +183,7 @@ private:
 		//new table
 		ctx.pushTable();
 		Table tbl;
-		ctx.pullTable(tbl, -1);
+		tbl.setto(ctx, -1);
 		
 		//assign reference
 		LuaObject* obj = instance;
@@ -248,7 +251,7 @@ private:
 		//call destuctor function
 		*/
 		
-		auto ptr = const_cast<void*>(ctx.pullPtr(1));
+		auto ptr = const_cast<void*>(ctx.getPtr(1));
 		auto obj = static_cast<LuaObject*>(ptr);
 		obj->removeReference();
 		return 0;
@@ -274,16 +277,16 @@ private:
 		Context ctx(L);
 		
 		//get the closure value for functions index
-		int funcIndex = ctx.pullInteger(ctx.upIndex(1));
+		int funcIndex = ctx.getInteger(ctx.upIndex(1));
 		
 		//get the table aka 'self' 
 		//it is the first parameter
 		Table tbl;
-		ctx.pullTable(tbl, 1);
+		tbl.setto(ctx, 1);
 		
 		//get ref field
 		tbl.pushField(REFFIELD);
-		auto obj = static_cast<T*>(const_cast<void*>(ctx.pullPtr(-1)));
+		auto obj = static_cast<T*>(const_cast<void*>(ctx.getPtr(-1)));
 		
 		//call specific function
 		return (obj->*(T::bindStatus.Functions[funcIndex].mfunc))(ctx);	

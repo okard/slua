@@ -24,7 +24,7 @@ Table::~Table()
 }
 
 
-void Table::pull(const lua_State* const state, int index)
+void Table::setto(const lua_State* const state, int index)
 {
 	if(!lua_istable (const_cast<lua_State*>(state), index))
 		throw LuaException("Value is not a table");

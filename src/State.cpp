@@ -53,30 +53,6 @@ int State::Execute()
     return lua_pcall(state_, 0, LUA_MULTRET, 0);
 }
 
-/**
-* Cast to lua_State
-*/
-State::operator lua_State* const()
-{
-    return state_;
-}
-
-/**
-* Get the lua state manually
-*/
-lua_State* const State::getState() const
-{
-    return state_;
-}
-
-/**
-* Get the default context
-*/
-Context& State::getContext()
-{
-	return ctx_;
-}
-
 
 //register panic function:
 //lua_atpanic

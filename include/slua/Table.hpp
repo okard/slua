@@ -12,19 +12,13 @@ namespace slua {
 //LuaTable Handling
 class Table : public Value
 {
-private:
-    
-    //metatable flag
-    
-    int ref_; //int luaL_ref (lua_State *L, int t);
-    
-
-    
 public:
     Table();
+    
+    //Table(state, index)
     ~Table();
 
-	virtual void pull(const lua_State* const state, int index);
+	virtual void setto(const lua_State* const state, int index); //rename to setto
 	
 	/**
 	* Pops 2 value from stack

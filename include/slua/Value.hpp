@@ -6,7 +6,7 @@
 struct lua_State;
 
 namespace slua {
- 
+	
 /**
 * Lua Value
 */   
@@ -15,6 +15,7 @@ class Value
 public:
     /**
     * LUA data types
+    * TODO class enum
     */
     enum Type
     {
@@ -38,6 +39,8 @@ private:
     const Type type_;
     
 protected:
+	//flags? initialized etc
+	
     /// positive absolute index
     int index_;
     
@@ -63,8 +66,12 @@ public:
 	
 	/**
 	* Assign a lua stack object to value
+	* setto
 	*/
 	virtual void pull(const lua_State* const state, int index);
+	
+	
+	virtual void setto(const lua_State* const state, int index);
 	
 	/**
 	* Is this value valid?
@@ -74,12 +81,16 @@ public:
     /**
     * Get Value Type
     */
-    Type getType() const;
+    inline Type getType() const { return type_; }
     
     /**
     * Get index position
     */
-    inline int getIndex() const;
+    inline int getIndex() const { return index_; }
+    
+    
+    //set/getValue<T>
+    
 };
     
     

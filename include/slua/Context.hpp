@@ -115,6 +115,10 @@ public:
     void pushTable();
     bool pushMetaTable(const char* key);
     
+    void pushGlobalTable();
+    
+    //remove pull api?
+    
     ////////////////////////////////////////////////////////////////////////////
     // Pull API
     ////////////////////////////////////////////////////////////////////////////
@@ -122,27 +126,28 @@ public:
     /**
     * get an integer value
     */
-    int pullInteger(int index);
+    int getInteger(int index);
+    
+    //bool getBoolean(int index);
+    //getString
+    //const char *lua_tolstring (lua_State *L, int index, size_t *len);
     
     /**
     * pull a ptr from index
     */
-    const void* pullPtr(int index);
+    const void* getPtr(int index);
     
-    
-    /**
-    * Pull the global table
-    */
-    void pullGlobalTable(Table& tbl);
     
     /**
     * Pull a table from index
     */
-    Table& pullTable(Table& table, int index);
+    //Table& pullTable(Table& table, int index);
     
     
     //error
 
+	//luatype
+	//static Type getType(int index);
     
     //LoadScript?
     

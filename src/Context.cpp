@@ -182,6 +182,7 @@ void Context::pushStringLiteral(const char* str)
 {
 	checkValid();
 	//from macro lua_pushliteral
+	//strlen(str)?
 	lua_pushlstring(state_, str, (sizeof(str)/sizeof(char))-1);
 }
 
@@ -222,41 +223,31 @@ bool Context::pushMetaTable(const char* key)
 	return luaL_newmetatable (state_, key);
 }
 
+void Context::pushGlobalTable()
+{
+	lua_rawgeti(state_, LUA_REGISTRYINDEX, LUA_RIDX_GLOBALS);
+}
+
+
 /**
 * get an integer value
 */
-int Context::pullInteger(int index)
+int Context::getInteger(int index)
 {
 	checkValid();
 	return lua_tointeger(state_, index);
 }
 
 
-void Context::pullGlobalTable(Table& tbl)
-{
-	/*lua 5.2
-	 pushNumber(LUA_RIDX_GLOBALS)
-	 lua_gettable(lua_State *L, LUA_REGISTRYINDEX);
-	*/
-	//pushglobaltable
-	
-	//tbl.pull(state_, LUA_GLOBALSINDEX);
-}
-
-
-/**
-* Pull a table from index
+/*lua 5.2
+ pushNumber(LUA_RIDX_GLOBALS)
+ lua_gettable(lua_State *L, LUA_REGISTRYINDEX);
 */
-Table& Context::pullTable(Table& table, int index)
-{
-	table.pull(*this, absIndex(index));
-	return table;
-}
 
 /**
 * pull a ptr from index
 */
-const void* Context::pullPtr(int index)
+const void* Context::getPtr(int index)
 {
 	auto ptr = lua_topointer(state_, index);
 	if(ptr == NULL)
