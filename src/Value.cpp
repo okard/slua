@@ -81,12 +81,24 @@ bool Value::valid() const
 {
 	if(state_ == nullptr)
 		return false;
+	
+	if(index_ == 0)
+		return false;
+		
+
+	//Most query functions accept as indices any value inside the available stack space, that is, 
+	//indices up to the maximum stack size you have set through lua_checkstack. 
+	// Such indices are called acceptable indices. More formally, we define an acceptable index as follows:
+	//(index < 0 && abs(index) <= top) ||
+    //(index > 0 && index <= stackspace)
+	// Note that 0 is never an acceptable index. 
 		
 	//check for absolute and relative index
 	
 	Context ctx(const_cast<lua_State*>(state_));
-	//if(ctx.stackCount() < index_)
-		//return false;
+	//is a absolute index
+	if(ctx.stackCount() < index_)
+		return false;
 		
 	switch(type_)
 	{

@@ -122,14 +122,14 @@ public:
     int getInteger(int index);
     
     //bool getBoolean(int index);
-    //getString
-    //const char *lua_tolstring (lua_State *L, int index, size_t *len);
-    
+
     /**
     * get a ptr from index
     */
     const void* getPtr(int index);
     
+    //getString
+    //const char *lua_tolstring (lua_State *L, int index, size_t *len);
     
     
     //error

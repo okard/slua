@@ -39,7 +39,6 @@ template<class T>
 struct BindStatus
 {
 	const char* className;
-	bool metatableRegisted; //<- remove
 	//const BindFunction constructor;
 	//const BindFunction destructor;
 	const BindFunction<T>* Functions;
@@ -296,6 +295,7 @@ private:
 		//get ref field
 		tbl.pushField(REFFIELD);
 		auto obj = static_cast<T*>(const_cast<void*>(ctx.getPtr(-1)));
+		ctx.pop(1); //pop the ref field
 		
 		//call specific function
 		return (obj->*(T::bindStatus.Functions[funcIndex].mfunc))(ctx);	

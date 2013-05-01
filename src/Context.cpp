@@ -142,6 +142,8 @@ void Context::checkValid() const
 */
 int Context::absIndex(int index)
 {
+	//int lua_absindex (lua_State *L, int idx);
+	
 	if(index > 0)
 		return index;
 		

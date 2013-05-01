@@ -36,6 +36,37 @@ public:
     }
 };
 
+
+/**
+* Engine Exception
+*/
+class LuaFormatException : public std::exception
+{
+private:
+	static const int buf_size = 1024;
+    char msg_[buf_size];
+
+public:
+    /**
+    * Constructor
+    */
+    LuaFormatException(const char* msg, ...);
+    
+    /**
+    * Destructor
+    */
+    ~LuaFormatException();
+    
+    /**
+    * Description
+    */
+    virtual const char* what() const throw();
+};
+
+
+//Format Exception
+
+
 } //end namespace slua
 
 

@@ -21,6 +21,12 @@ State::State()
 	  ctx_(state_)
 {
     luaL_openlibs(state_);
+    
+    
+    //register panic function:
+	//lua_atpanic
+	//lua_CFunction lua_atpanic (lua_State *L, lua_CFunction panicf);
+	//using debugger?
 }
 
 /**
@@ -40,8 +46,7 @@ void State::LoadFile(const char* file)
     int status = luaL_loadfile(state_, file);
     if (status)
     {
-        throw LuaException("Can't load lua file");
-        //LOG("Couldn't load file: " << lua_tostring(state, -1))
+        throw LuaFormatException("Error loading file: %s", lua_tostring(state_, -1));
     }
 }
 
@@ -54,10 +59,7 @@ int State::Execute()
 }
 
 
-//register panic function:
-//lua_atpanic
-//lua_CFunction lua_atpanic (lua_State *L, lua_CFunction panicf);
-//using debugger?
+
 
 /*
 Sets a new panic function and returns the old one.

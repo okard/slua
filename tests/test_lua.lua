@@ -8,7 +8,17 @@ print(TestClass)
 
 local test = TestClass();
 
-test:test_simple();
-test:test_simple("foo", 1);
+print(test:test_simple());
+
+tbl = { 
+	foo = "test",
+	abc = { a=1, b=2, c=3 },
+	one = "one"
+}
+
+
+test:test_simple(tbl, "test", 14);
+
+
 
 print("end lua");

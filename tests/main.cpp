@@ -15,10 +15,18 @@ public:
 	
 	int test_simple(slua::Context& ctx)
 	{
+		std::cout << "The upvalue of clojure: " << ctx.upIndex(1) << std::endl;
+		
 		//the last value is alway the clojure data
 		std::cout << "Calling 'test_simple' with " << ctx.stackCount() << " arguments" << std::endl;
-		slua::Debugger::DumpStack(ctx);
-		return 0;
+		
+		//only when there are arguments
+		if(ctx.stackCount() > 1)
+			slua::Debugger::DumpStack(ctx);
+		
+		ctx.pushInteger(10);
+		std::cout << "Stack Grow: " << ctx.stackGrow() << std::endl;
+		return ctx.stackGrow();
 	}
 	
 };
@@ -32,7 +40,6 @@ static const slua::BindFunction<TestClass> function[]=
 const slua::BindStatus<TestClass> TestClass::bindStatus = 
 {
 	.className = "TestClass",
-	.metatableRegisted = false, //remove
 	.Functions = function	
 };
 
