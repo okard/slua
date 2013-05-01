@@ -63,8 +63,6 @@ public:
 	void markShareable();
 };
 
-
-
 /**
 * 
 * slua::Bind::Class<Foo>(state);
@@ -194,7 +192,7 @@ private:
 		for (int i = 0; T::bindStatus.Functions[i].name; i++) 
 		{
 			ctx.pushInteger(i);
-			ctx.pushClojure(&Bind::lua_dispatch<T>, 1);
+			ctx.pushClojure(&Bind::lua_dispatch<T>, 1); //clojure has internal arguments
 			tbl.assignField(T::bindStatus.Functions[i].name);
 		}
 		

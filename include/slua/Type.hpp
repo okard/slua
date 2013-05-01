@@ -25,9 +25,6 @@ enum class LuaType
 	THREAD
 };
 
-LuaType fromLua(int type);
-
-
 	
 };
 

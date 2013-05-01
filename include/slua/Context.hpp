@@ -17,10 +17,10 @@ namespace slua {
 typedef int (*LuaFunction) (lua_State *L);
   
   
-
 /**
 * Higher Level Access to LuaState
 * Provides utility functions for lua_State
+* Interact with the lua stack
 */
 class Context
 {
@@ -117,10 +117,8 @@ public:
     
     void pushGlobalTable();
     
-    //remove pull api?
-    
     ////////////////////////////////////////////////////////////////////////////
-    // Pull API
+    // Get API
     ////////////////////////////////////////////////////////////////////////////
     
     /**
@@ -133,15 +131,10 @@ public:
     //const char *lua_tolstring (lua_State *L, int index, size_t *len);
     
     /**
-    * pull a ptr from index
+    * get a ptr from index
     */
     const void* getPtr(int index);
     
-    
-    /**
-    * Pull a table from index
-    */
-    //Table& pullTable(Table& table, int index);
     
     
     //error

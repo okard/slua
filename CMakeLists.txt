@@ -15,7 +15,7 @@ include_directories(include)
 # Set up executable
 file(GLOB_RECURSE SLUA_SOURCES src/*.cpp)
 
-add_library(slua STATIC ${SLUA_SOURCES})
+add_library(slua SHARED ${SLUA_SOURCES})
 target_link_libraries(slua "lua")
 
 # copy to lib folder
@@ -24,3 +24,6 @@ get_target_property(SLUA_LIB_NAME slua LOCATION)
 add_custom_command(TARGET slua POST_BUILD
     COMMAND cp ARGS ${SLUA_LIB_NAME} ${CMAKE_CURRENT_LIST_DIR}/lib/
 )
+
+
+add_subdirectory("tests")

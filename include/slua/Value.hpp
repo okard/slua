@@ -3,6 +3,8 @@
 #ifndef __SLUA_VALUE__
 #define __SLUA_VALUE__
 
+#include <slua/Type.hpp>
+
 struct lua_State;
 
 namespace slua {
@@ -11,32 +13,10 @@ namespace slua {
 * Lua Value
 */   
 class Value
-{
-public:
-    /**
-    * LUA data types
-    * TODO class enum
-    */
-    enum Type
-    {
-		TYPE_VALUE, //variable type
-		
-		//Fixed types
-		TYPE_NIL,
-		TYPE_BOOLEAN,
-		TYPE_NUMBER,
-        TYPE_STRING,
-        TYPE_TABLE,
-        TYPE_FUNCTION,
-        TYPE_USERDATA,
-        TYPE_LIGHTUSERDATA,
-        TYPE_THREAD
-    };
-    
+{   
 private:
-    
     /// The type of the value
-    const Type type_;
+    const LuaType type_;
     
 protected:
 	//flags? initialized etc
@@ -57,20 +37,16 @@ public:
 	/**
 	* Create a value for type
 	*/
-	Value(Type type);
+	Value(LuaType type);
 
 	/**
 	* Destructor
 	*/
-	~Value();
+	virtual ~Value();
 	
 	/**
-	* Assign a lua stack object to value
-	* setto
+	* Let the value point to the right state and to index
 	*/
-	virtual void pull(const lua_State* const state, int index);
-	
-	
 	virtual void setto(const lua_State* const state, int index);
 	
 	/**
@@ -81,16 +57,22 @@ public:
     /**
     * Get Value Type
     */
-    inline Type getType() const { return type_; }
+    inline LuaType getType() const { return type_; }
     
     /**
     * Get index position
     */
     inline int getIndex() const { return index_; }
     
+    /**
+    * Get the real type at the position of the value
+    */
+    LuaType getRealType() const;
     
-    //set/getValue<T>
-    
+    /**
+    * Get the lua type for a state at index position
+    */
+    static LuaType getLuaType(lua_State* state, int index); 
 };
     
     

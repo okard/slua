@@ -54,6 +54,11 @@ class State
     inline operator lua_State* const () { return state_; }
     
     /**
+    * Cast operator for context
+    */
+    inline operator Context& ()  { return ctx_; }
+    
+    /**
     * Get the lua state manually
     */
     inline lua_State* const getState() const { return state_; }

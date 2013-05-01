@@ -13,12 +13,19 @@ namespace slua {
 class Table : public Value
 {
 public:
+	/**
+	* New table handling object
+	*/
     Table();
     
     //Table(state, index)
+    
     ~Table();
 
-	virtual void setto(const lua_State* const state, int index); //rename to setto
+	/**
+	* Let the class point to a state and a index on which a table exists
+	*/ 
+	virtual void setto(const lua_State* const state, int index);
 	
 	/**
 	* Pops 2 value from stack

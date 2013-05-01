@@ -15,7 +15,7 @@ using namespace slua;
 
 
 Table::Table()
-	: Value(TYPE_TABLE)
+	: Value(LuaType::TABLE)
 {
 }
 
@@ -82,6 +82,10 @@ void Table::assignMetaTable()
 {
 	valid();
 	//TODO check value on top is a table?
+	
+	if(Value::getLuaType(const_cast<lua_State*>(state_), -1) != LuaType::TABLE)
+		throw LuaException("No table on top of stack to assign as metatable");
+	
 	lua_setmetatable(const_cast<lua_State*>(state_), index_);
 }
 
