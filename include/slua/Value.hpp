@@ -4,8 +4,7 @@
 #define __SLUA_VALUE__
 
 #include <slua/Type.hpp>
-
-struct lua_State;
+#include <slua/Context.hpp>
 
 namespace slua {
 	
@@ -47,7 +46,7 @@ public:
 	/**
 	* Let the value point to the right state and to index
 	*/
-	virtual void setto(const lua_State* const state, int index);
+	virtual void setto(Context& ctx, int index);
 	
 	/**
 	* Is this value valid?

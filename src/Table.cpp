@@ -24,14 +24,14 @@ Table::~Table()
 }
 
 
-void Table::setto(const lua_State* const state, int index)
+void Table::setto(Context& ctx, int index)
 {
-	if(!lua_istable (const_cast<lua_State*>(state), index))
+	if(!lua_istable (ctx, index))
 		throw LuaException("Value is not a table");
 	
 	//check stacksize
-	state_ = state;
-	index_ = index;
+	state_ = ctx;
+	index_ = ctx.absIndex(index);
 }
 
 
@@ -42,7 +42,9 @@ void Table::setto(const lua_State* const state, int index)
 */
 void Table::assignField()
 {
-	valid();
+	if(!valid())
+		throw LuaException("not a valid table object anymore");
+		
 	lua_settable(const_cast<lua_State*>(state_), index_);
 }
 
@@ -51,7 +53,9 @@ void Table::assignField()
 */
 void Table::assignField(const char* key)
 {
-	valid();
+	if(!valid())
+		throw LuaException("not a valid table object anymore");
+		
 	lua_setfield (const_cast<lua_State*>(state_), index_, key);
 }
 
@@ -61,7 +65,9 @@ void Table::assignField(const char* key)
 */
 void Table::pushField()
 {
-	valid();
+	if(!valid())
+		throw LuaException("not a valid table object anymore");
+		
 	lua_gettable (const_cast<lua_State*>(state_), index_);
 }
 
@@ -71,7 +77,9 @@ void Table::pushField()
 */
 void Table::pushField(const char* key)
 {
-	valid();
+	if(!valid())
+		throw LuaException("not a valid table object anymore");
+		
 	lua_getfield (const_cast<lua_State*>(state_), index_, key);
 }
 
@@ -80,9 +88,10 @@ void Table::pushField(const char* key)
 */
 void Table::assignMetaTable()
 {
-	valid();
-	//TODO check value on top is a table?
-	
+	if(!valid())
+		throw LuaException("not a valid table object anymore");
+		
+	//check value on top is a table?
 	if(Value::getLuaType(const_cast<lua_State*>(state_), -1) != LuaType::TABLE)
 		throw LuaException("No table on top of stack to assign as metatable");
 	

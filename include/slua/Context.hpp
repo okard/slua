@@ -5,17 +5,12 @@
 #ifndef __SLUA_CONTEXT_HPP__
 #define __SLUA_CONTEXT_HPP__
 
-#include "Value.hpp"
-#include "Table.hpp"
-
 struct lua_State;
 
 namespace slua {
 	
-	
 //TODO with available context?
 typedef int (*LuaFunction) (lua_State *L);
-  
   
 /**
 * Higher Level Access to LuaState

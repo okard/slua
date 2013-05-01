@@ -19,6 +19,10 @@ public:
 	Debugger(Context& ctx);
 	~Debugger();
 
+
+
+	static void DumpStack(Context& ctx);
+	
 };
  
 

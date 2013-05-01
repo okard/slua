@@ -25,7 +25,7 @@ public:
 	/**
 	* Let the class point to a state and a index on which a table exists
 	*/ 
-	virtual void setto(const lua_State* const state, int index);
+	virtual void setto(Context& ctx, int index);
 	
 	/**
 	* Pops 2 value from stack

@@ -145,7 +145,12 @@ int Context::absIndex(int index)
 	if(index > 0)
 		return index;
 		
-	return index + stackCount();
+	// return (_idx > 0) ? _idx : (_idx <= LUA_REGISTRYINDEX) ? _idx : (lua_gettop( L) + 1 + _idx);
+	
+	if(index <= LUA_REGISTRYINDEX)
+		return index;
+		
+	return index + stackCount() + 1;
 }
 
 /**

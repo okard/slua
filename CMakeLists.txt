@@ -6,8 +6,8 @@ cmake_minimum_required(VERSION 2.8)
 project(slua)
 
 # C++11
-set(CMAKE_CXX_FLAGS "${CMAKE_C_FLAGS} -std=c++11")
-set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -static")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
+set(STATIC_LIBRARY_FLAGS "${STATIC_LIBRARY_FLAGS} -static")
 
 # Include dir
 include_directories(include)
@@ -15,7 +15,7 @@ include_directories(include)
 # Set up executable
 file(GLOB_RECURSE SLUA_SOURCES src/*.cpp)
 
-add_library(slua SHARED ${SLUA_SOURCES})
+add_library(slua STATIC ${SLUA_SOURCES})
 target_link_libraries(slua "lua")
 
 # copy to lib folder

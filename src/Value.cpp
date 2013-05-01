@@ -68,10 +68,10 @@ Value::~Value()
 {
 }
 
-void Value::setto(const lua_State* const state, int index)
+void Value::setto(Context& ctx, int index)
 {
-	state_= state;
-	index_ = index;
+	state_= ctx;
+	index_ = ctx.absIndex(index);
 	
 	if(valid())
 		throw LuaException("Invalid Lua type at the value positon");

@@ -5,6 +5,8 @@
 #ifndef __SLUA_BIND_HPP__
 #define __SLUA_BIND_HPP__
 
+#include <iostream> //debug
+
 #include "Exception.hpp"
 #include "Context.hpp"
 #include "Table.hpp"
@@ -30,7 +32,9 @@ struct BindFunction
     int(T::*mfunc)(Context&);
 };    
 
-
+/**
+* Use as bindStatus
+*/
 template<class T>
 struct BindStatus
 {
@@ -148,11 +152,18 @@ private:
 		if(registered)
 			return;
 			
+		//std::cout << "1_Values on stack: " << ctx.stackCount() << std::endl;
+			
+		Table meta;
 		if(!ctx.pushMetaTable(T::bindStatus.className))
 			throw LuaException("Already registered metatable with this name");
+			
+		//std::cout << "2_Values on stack: " << ctx.stackCount() << std::endl;
 		
-		Table meta;
 		meta.setto(ctx, -1);
+		
+		//std::cout << "Absolute index: " << meta.getIndex() << std::endl;
+		
 		ctx.pushStringLiteral("_gc");
 		ctx.pushFunc(&Bind::lua_gc<T>);
 		meta.assignField();

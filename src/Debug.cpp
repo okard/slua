@@ -2,10 +2,60 @@
 
 #include <slua/Debug.hpp>
 
+//Lua Includes
+extern "C" {
+    #include <lua.h>
+    #include <lauxlib.h>
+    #include <lualib.h>
+}
+
+#include <cstdio>
 
 using namespace slua;
 
 //debugging function
+
+
+void Debugger::DumpStack(Context& ctx)
+{
+	int i;
+	int top = lua_gettop(ctx);
+	for (i = 1; i <= top; i++) 
+	{
+		int t = lua_type(ctx, i);
+		
+		printf("%d:\t", i);
+        
+        switch (t) 
+        {
+          case LUA_TSTRING:  /* strings */
+            printf("`%s'", lua_tostring(ctx, i));
+            break;
+    
+          case LUA_TBOOLEAN:  /* booleans */
+            printf(lua_toboolean(ctx, i) ? "true" : "false");
+            break;
+    
+          case LUA_TNUMBER:  /* numbers */
+            printf("%g", lua_tonumber(ctx, i));
+            break;
+    
+          default:  /* other values */
+            printf("%s", lua_typename(ctx, t));
+            break;
+    
+        }
+        printf("\n");  /* put a separator */
+      }
+      printf("\n");  /* end the listing */
+}
+
+
+static void stackDump (lua_State *L) {
+    
+    }
+
+
 
 /*
 typedef struct lua_Debug {
