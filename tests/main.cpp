@@ -23,6 +23,10 @@ public:
 		//only when there are arguments
 		if(ctx.stackCount() > 1)
 			slua::Debugger::DumpStack(ctx);
+			
+				
+		//function to retrieve LuaObject of table parameter so it can stored here
+			
 		
 		ctx.pushInteger(10);
 		std::cout << "Stack Grow: " << ctx.stackGrow() << std::endl;

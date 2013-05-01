@@ -97,11 +97,9 @@ public:
 		registerMetaTable<T>(ctx);
 		
 		//register contructor function
-		
 		ctx.pushGlobalTable();
 		Table global;
 		global.setto(ctx, -1);
-		
 		ctx.pushFunc(&Bind::lua_constructor<T>);
 		global.assignField(T::bindStatus.className);
     }
@@ -116,9 +114,18 @@ public:
 		registerMetaTable<T>(ctx);
 		
         LuaObject* lo = instance;
-        lo->addReference();
-			
-		
+        lo->addReference();	
+        
+        ctx.pushGlobalTable();
+        Table global;
+		global.setto(ctx, -1);	//access to global table
+        ctx.pushString(name);	//name of object
+        ctx.pushPtr(instance);  //push the pointer to object
+        if(!ctx.pushMetaTable(T::bindStatus.className))
+			throw LuaException("Already registered metatable with this name");
+		ctx.assignMetaTable(-2); //assign metatable to pointer
+		global.assignField();	//assign the ptr to name to global table
+		ctx.pop(1); //pop globaltable
     }
     
     /**
@@ -131,6 +138,13 @@ public:
 		
 		LuaObject* lo = instance;
         lo->addReference();   
+        
+		ctx.pushPtr(instance);  //push the pointer to object
+        if(!ctx.pushMetaTable(T::bindStatus.className))
+			throw LuaException("Already registered metatable with this name");
+        ctx.assignMetaTable(-2); //assign metatable to pointer
+        
+        //finished
 	}
     
     
@@ -163,9 +177,25 @@ private:
 		
 		//std::cout << "Absolute index: " << meta.getIndex() << std::endl;
 		
-		ctx.pushStringLiteral("_gc");
+		ctx.pushStringLiteral("__gc");
 		ctx.pushFunc(&Bind::lua_gc<T>);
 		meta.assignField();
+		
+		ctx.pushStringLiteral("__index");
+		ctx.pushFunc(&Bind::lua_index);
+		meta.assignField();
+		
+		// assign functions
+		// for binding in a metatable the metatable requires a __index function
+		for (int i = 0; T::bindStatus.Functions[i].name; i++) 
+		{
+			ctx.pushInteger(i);
+			ctx.pushClojure(&Bind::lua_dispatch<T>, 1); //clojure has internal arguments
+			meta.assignField(T::bindStatus.Functions[i].name);
+		}
+		
+		//bind index? so the functions get dispatched over metatable?
+		//bind the function in metatable?
 		
 		//register _newindex
 		
@@ -193,18 +223,11 @@ private:
 		Table tbl;
 		tbl.setto(ctx, -1);
 		
+		//TODO better way to do that
 		//assign reference
 		LuaObject* obj = instance;
 		ctx.pushPtr(obj);
 		tbl.assignField(REFFIELD);
-		
-		// assign functions
-		for (int i = 0; T::bindStatus.Functions[i].name; i++) 
-		{
-			ctx.pushInteger(i);
-			ctx.pushClojure(&Bind::lua_dispatch<T>, 1); //clojure has internal arguments
-			tbl.assignField(T::bindStatus.Functions[i].name);
-		}
 		
 		// Check for existing metatable and push it on stack
 		// TODO lua error not an exception
@@ -214,9 +237,7 @@ private:
 		//assign metatable
 		tbl.assignMetaTable();
 		
-		
 		//what when gc disabled?
-		
 	}
 
 	//------------------------------------------------------------------
@@ -229,11 +250,21 @@ private:
     static int lua_constructor(lua_State *L)
     {
 		T* obj = new T();
-		LuaObject* lo = obj;
+		LuaObject* lo = obj; //make shure is LuaObject
+		
+		Context ctx(L);
+		ctx.pushPtr(obj);
+		
+		// Check for existing metatable and push it on stack
+		// TODO lua error not an exception
+		if(ctx.pushMetaTable(T::bindStatus.className))
+			throw LuaException("MetaTable was not created for this type");
+		
+		//assign metatable
+		ctx.assignMetaTable(-2);
 		
 		//call constructor function
-		
-		pushInstanceTable<T>(L, obj);
+		//T::bindStatus.
 		return 1;
 	}
     
@@ -252,12 +283,18 @@ private:
 		//get ref field
 		
 		/*
-		Table obj;
-		ctx.pullTable(obj, -1);
+		Table tbl;
+		tbl.setto(ctx, -1);
 		obj.pushField(REFFIELD);
+		//get ref field
+		tbl.pushField(REFFIELD);
+		auto obj = static_cast<T*>(const_cast<void*>(ctx.getPtr(-1)));
+		ctx.pop(1); //pop the ref field
 		* 
 		//call destuctor function
 		*/
+		
+		//check if is userdata
 		
 		auto ptr = const_cast<void*>(ctx.getPtr(1));
 		auto obj = static_cast<LuaObject*>(ptr);
@@ -271,8 +308,30 @@ private:
     static int lua_protect(lua_State *L)
     {
 		//Move to Bind.cpp
+		return 0;
+	}
+	
+	/**
+	* Index dispatcher function?
+	*/
+	static int lua_index(lua_State *L)
+	{	
+		Context ctx(L);
 		
-		
+		//ctx.stack top == 2
+		if(ctx.isType(2, LuaType::STRING))
+		{
+			//1 the object
+			//2 the key
+			if(!ctx.pushMetaTable(1)) //get the metatable
+				return 0;
+			Table tbl;
+			tbl.setto(ctx, -1);  //assign
+			ctx.pushCopy(2);	//push copy of key string
+			tbl.pushField();	//retrieve key from metatable
+			//std::cout << ctx.getTypeString(-1) << std::endl;
+			return 1;
+		}
 		return 0;
 	}
 	
@@ -287,15 +346,8 @@ private:
 		//get the closure value for functions index
 		int funcIndex = ctx.getInteger(ctx.upIndex(1));
 		
-		//get the table aka 'self' 
-		//it is the first parameter
-		Table tbl;
-		tbl.setto(ctx, 1);
-		
-		//get ref field
-		tbl.pushField(REFFIELD);
-		auto obj = static_cast<T*>(const_cast<void*>(ctx.getPtr(-1)));
-		ctx.pop(1); //pop the ref field
+		//the class pointer is the userdata itself given as self parameter
+		auto obj = static_cast<T*>(const_cast<void*>(ctx.getPtr(1)));
 		
 		//call specific function
 		return (obj->*(T::bindStatus.Functions[funcIndex].mfunc))(ctx);	

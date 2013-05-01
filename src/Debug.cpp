@@ -16,6 +16,17 @@ using namespace slua;
 //debugging function
 
 
+static inline bool checkMetaTable(int type)
+{
+	switch(type)
+	{
+		case LUA_TTABLE: return true;
+		case LUA_TFUNCTION: return true;
+		case LUA_TUSERDATA: return true;
+		case LUA_TLIGHTUSERDATA: return true;
+		default: return false;
+	}
+}
 
 static void PrintValue(Context& ctx, int index)
 {
@@ -47,15 +58,6 @@ static void PrintValue(Context& ctx, int index)
 				PrintValue(ctx, lua_absindex(ctx,-1));
 				lua_pop(ctx, 1);
 			}
-			
-			//metatable
-			if(lua_getmetatable(ctx, index) > 0)
-			{
-				printf("\n[Meta]");
-				PrintValue(ctx, lua_absindex(ctx,-1));
-				lua_pop(ctx, 1);
-			}
-			
 			break;
 			
 		case  LUA_TFUNCTION:
@@ -65,10 +67,26 @@ static void PrintValue(Context& ctx, int index)
 				printf("function");
 			break;
 			
+		case LUA_TUSERDATA:
+			printf("userdata");
+			break;
+		
+		case LUA_TLIGHTUSERDATA:
+			printf("lightuserdata");
+			break;
+			
 		default:  /* other values */
             printf("%s", luaL_typename(ctx, index));
             break;	
 	}
+	
+	//can have metatable
+	if(checkMetaTable(type) && lua_getmetatable(ctx, index) > 0)
+	{
+		printf("\n[Meta]");
+		PrintValue(ctx, lua_absindex(ctx,-1));
+		lua_pop(ctx, 1);
+	}	
 }
 
 void Debugger::DumpStack(Context& ctx)

@@ -5,6 +5,8 @@
 #ifndef __SLUA_CONTEXT_HPP__
 #define __SLUA_CONTEXT_HPP__
 
+#include <slua/Type.hpp>
+
 struct lua_State;
 
 namespace slua {
@@ -109,8 +111,11 @@ public:
     
     void pushTable();
     bool pushMetaTable(const char* key);
+    bool pushMetaTable(int index);
     
     void pushGlobalTable();
+    
+    void pushCopy(int index);
     
     ////////////////////////////////////////////////////////////////////////////
     // Get API
@@ -128,10 +133,26 @@ public:
     */
     const void* getPtr(int index);
     
-    //getString
-    //const char *lua_tolstring (lua_State *L, int index, size_t *len);
+    /**
+    * Get string
+    */
+    const char* getString(int index);
+    
+	/**
+	* Get type string
+	*/
+	const char* getTypeString(int index);
+    
+    /**
+    * is the type at index
+    */
+    bool isType(int index, LuaType type);
     
     
+    /**
+    * Assign meta table
+    */
+    void assignMetaTable(int index);
     //error
 
 	//luatype

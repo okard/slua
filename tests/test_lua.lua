@@ -13,9 +13,9 @@ print(test:test_simple());
 tbl = { 
 	foo = "test",
 	abc = { a=1, b=2, c=3 },
-	one = "one"
+	"one",
+	"two"
 }
-
 
 test:test_simple(tbl, "test", 14);
 

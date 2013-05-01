@@ -84,6 +84,18 @@ void Table::pushField(const char* key)
 }
 
 /**
+* Get the field with the key at index
+*/
+void Table::pushRaw(const int keyIndex)
+{
+	if(!valid())
+		throw LuaException("not a valid table object anymore");
+		
+	//TODO Check of keyIndex is valid
+	lua_rawgeti(const_cast<lua_State*>(state_), index_, keyIndex);
+}
+
+/**
 * Assign the table on stack as metatable
 */
 void Table::assignMetaTable()
@@ -97,6 +109,18 @@ void Table::assignMetaTable()
 	
 	lua_setmetatable(const_cast<lua_State*>(state_), index_);
 }
+
+/**
+* Pushes the MetaTable of the current tbl on stack
+*/
+bool Table::pushMetaTable()
+{
+	if(!valid())
+		throw LuaException("not a valid table object anymore");
+		
+	return lua_getmetatable(const_cast<lua_State*>(state_), index_);		
+}
+	
 
  //The thread environment (where global variables live) is always at pseudo-index LUA_GLOBALSINDEX.
  //The environment of the running C function is always at pseudo-index LUA_ENVIRONINDEX. 

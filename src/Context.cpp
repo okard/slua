@@ -10,6 +10,7 @@ extern "C" {
 }
 
 #include <slua/Exception.hpp>
+#include <slua/Value.hpp>
 
 using namespace slua;
 
@@ -230,11 +231,24 @@ bool Context::pushMetaTable(const char* key)
 	return luaL_newmetatable (state_, key);
 }
 
+
+bool Context::pushMetaTable(int index)
+{
+	checkValid();
+	return lua_getmetatable(state_, index);
+}
+
+
 void Context::pushGlobalTable()
 {
 	lua_rawgeti(state_, LUA_REGISTRYINDEX, LUA_RIDX_GLOBALS);
 }
 
+
+void Context::pushCopy(int index)
+{
+	lua_pushvalue (state_, index);
+}
 
 /**
 * get an integer value
@@ -263,31 +277,28 @@ const void* Context::getPtr(int index)
 }
 
 
-/*
-
-
-
-void Context::get(Value& val, int index)
+const char* Context::getString(int index)
 {
-	//val.getType should match
-	
-	switch(lua_type (state_, index))
-	{
-		case LUA_TNIL: 
-			break;
-		case LUA_TNUMBER: break; 
-		case LUA_TBOOLEAN: break;
-		case LUA_TSTRING: break; 
-		case LUA_TTABLE: break; 
-		case LUA_TFUNCTION: break; 
-		case LUA_TUSERDATA: break; 
-		case LUA_TTHREAD: break;
-		case LUA_TLIGHTUSERDATA: break;
-		//default: //error
-	}
+	return lua_tostring(state_, index);
 }
 
-*/
+
+const char* Context::getTypeString(int index)
+{
+	return luaL_typename(state_, index);
+}
+
+
+bool Context::isType(int index, LuaType type)
+{
+	return Value::getLuaType(state_, index) == type;
+}
+
+
+void Context::assignMetaTable(int index)
+{
+	lua_setmetatable(state_, index);
+}
 
 
 // LUA_REGISTRYINDEX is a table

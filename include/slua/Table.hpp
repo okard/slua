@@ -51,11 +51,21 @@ public:
 	void pushField(const char* key);
 	
 	/**
+	* Get the field with the key at index
+	*/
+	void pushRaw(const int keyIndex);
+	
+	/**
 	* Assign the table on stack as metatable
 	*/
 	void assignMetaTable();
-
-	//pushMetaTable()
+	
+	/**
+	* Pushes the MetaTable of the current tbl on stack
+	*/
+	bool pushMetaTable();
+	
+	
 	//setMetaTable()
 	
 	
