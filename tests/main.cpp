@@ -10,12 +10,14 @@
 
 class TestClass : public slua::LuaObject
 {
+private:
+	int id_;
 public:
 	static const slua::BindStatus<TestClass> bindStatus;
 	
 	int test_simple(slua::Context& ctx)
 	{
-		std::cout << "The upvalue of clojure: " << ctx.upIndex(1) << std::endl;
+		std::cout << "ID: " << id_ << " The upvalue of clojure: " << ctx.upIndex(1) << std::endl;
 		
 		//the last value is alway the clojure data
 		std::cout << "Calling 'test_simple' with " << ctx.stackCount() << " arguments" << std::endl;
@@ -33,7 +35,22 @@ public:
 		return ctx.stackGrow();
 	}
 	
+	static int count;
+	
+	TestClass()
+	{
+		id_ = count;
+		count++;
+		std::cout << "TestClass created: " << id_ << std::endl;
+	}
+	
+	~TestClass()
+	{
+		std::cout << "TestClass destroyed " << id_ << std::endl;
+	}
 };
+
+int TestClass::count = 0;
 
 static const slua::BindFunction<TestClass> function[]=
 {

@@ -69,6 +69,11 @@ int State::Execute()
 		throw LuaFormatException("Error executing: %s", lua_tostring(state_, -1));
 	}
 	
+	if(r == LUA_ERRGCMM)
+	{
+		throw LuaFormatException("Error executing: %s", lua_tostring(state_, -1));
+	}
+	
     return r;
 }
 

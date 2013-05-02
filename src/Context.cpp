@@ -191,7 +191,7 @@ void Context::pushStringLiteral(const char* str)
 	checkValid();
 	//from macro lua_pushliteral
 	//strlen(str)?
-	lua_pushlstring(state_, str, (sizeof(str)/sizeof(char))-1);
+	lua_pushstring(state_, str);
 }
 
 void Context::pushString(const char* str)
