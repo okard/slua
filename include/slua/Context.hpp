@@ -117,6 +117,8 @@ public:
     
     void pushCopy(int index);
     
+    void pushGlobal(const char* key);
+    
     ////////////////////////////////////////////////////////////////////////////
     // Get API
     ////////////////////////////////////////////////////////////////////////////
@@ -149,15 +151,21 @@ public:
     bool isType(int index, LuaType type);
     
     
+    ////////////////////////////////////////////////////////////////////////////
+    // Special API
+    ////////////////////////////////////////////////////////////////////////////
+    
     /**
     * Assign meta table
     */
     void assignMetaTable(int index);
-    //error
-
-	//luatype
-	//static Type getType(int index);
     
+    /**
+    * Call function with args arguments and results 
+    */
+    void call(int args, int results);
+    
+    //error
     //LoadScript?
     
 private:

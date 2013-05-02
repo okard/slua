@@ -250,6 +250,11 @@ void Context::pushCopy(int index)
 	lua_pushvalue (state_, index);
 }
 
+void Context::pushGlobal(const char* key)
+{
+	lua_getglobal (state_, key);
+}
+
 /**
 * get an integer value
 */
@@ -300,6 +305,13 @@ void Context::assignMetaTable(int index)
 	lua_setmetatable(state_, index);
 }
 
+void Context::call(int args, int results)
+{
+	if (lua_pcall(state_, args, results, 0) != 0)
+	{
+		throw LuaFormatException("Error at call: %s", lua_tostring(state_, -1));
+	}
+}
 
 // LUA_REGISTRYINDEX is a table
 
