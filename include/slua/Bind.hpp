@@ -47,6 +47,7 @@ struct BindStatus
 
 /**
 * Basic Class for binding objects with refcounting memory management
+* Move to seperate files?
 */
 class LuaObject
 {
@@ -58,7 +59,7 @@ private:
 		
 public:
 	LuaObject();
-	~LuaObject();
+	virtual ~LuaObject();
 
 	void addReference();
 	void removeReference();

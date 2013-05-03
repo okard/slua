@@ -15,23 +15,6 @@ extern "C" {
 
 using namespace slua;
 
-class LuaRef
-{
-private:
-	int ref_;
-	lua_State* state_;
-public:
-
-	LuaRef(lua_State* const state) :  state_(state), ref_(0) {}
-
-	void set(lua_State* const state) { ref_ = luaL_ref(state, LUA_REGISTRYINDEX); }
-	void push(lua_State* const state) { lua_rawgeti(state, LUA_REGISTRYINDEX, ref_); }
-	void unref(lua_State* const state) { luaL_unref(state, LUA_REGISTRYINDEX, ref_); }
-	
-	inline operator lua_State* const () { return state_; }
-};
-
-
 inline LuaType fromLua(int type)
 {
 	switch(type)
