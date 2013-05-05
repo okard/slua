@@ -9,6 +9,7 @@
 
 #include "Exception.hpp"
 #include "Context.hpp"
+#include "LuaObject.hpp"
 #include "Table.hpp"
 
 namespace slua {
@@ -45,27 +46,6 @@ struct BindStatus
 }; 
 
 
-/**
-* Basic Class for binding objects with refcounting memory management
-* Move to seperate files?
-*/
-class LuaObject
-{
-private:
-	bool shareable_;
-	unsigned short refcount_;
-	
-	//luaref
-		
-public:
-	LuaObject();
-	virtual ~LuaObject();
-
-	void addReference();
-	void removeReference();
-	bool isShareable();
-	void markShareable();
-};
 
 /**
 * 
@@ -98,6 +78,7 @@ public:
 		registerMetaTable<T>(ctx);
 		
 		//register contructor function
+		//todo add userdata to constructor
 		ctx.pushGlobalTable();
 		Table global;
 		global.setto(ctx, -1);
