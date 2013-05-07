@@ -66,6 +66,9 @@ private:
     Bind(const Bind&){}
     
 public:
+	//set id generator
+	//id resolver 
+	
     //context instead of lua_State
     
     /**
@@ -129,8 +132,6 @@ public:
     
     
 private:
-	static const char* REFFIELD;
-	
 	/**
 	* Register the class metatable to registry
 	*/
@@ -150,9 +151,11 @@ private:
 		ctx.pushFunc(&Bind::lua_gc<T>);
 		meta.assignField();
 		
+		//TODO register metatable as index function?
 		//register index function
 		ctx.pushStringLiteral("__index");
-		ctx.pushFunc(&Bind::lua_index);
+		ctx.pushCopy(meta.getIndex());
+		//ctx.pushFunc(&Bind::lua_index);
 		meta.assignField();
 		
 		// assign functions
@@ -165,7 +168,6 @@ private:
 		}
 		
 		//register _newindex to protect index 0
-		
 		
 		//protect metatable
 		ctx.pushStringLiteral("__metatable");
@@ -207,6 +209,7 @@ private:
 		
 		//what when gc disabled?
 	}
+	
 
 	//------------------------------------------------------------------
 	//-- Calls from lua code:
@@ -219,6 +222,16 @@ private:
     {
 		T* obj = new T();
 		LuaObject* lo = obj; //make shure is LuaObject
+		
+		
+		/*
+		//don't get garbage collected
+		
+		ctx.pushPtr(obj);
+		if(ctx.pushMetaTable(T::bindStatus.className))
+			throw LuaException("MetaTable was not created for this type");
+		tbl.assignMetaTable();
+		*/
 			
 		pushInstanceTable<T>(L, obj);
 		
@@ -291,6 +304,8 @@ private:
 	template<class T>
     static int lua_dispatch(lua_State *L)
     {
+		//void *luaL_checkudata (lua_State *L, int index, const char *tname);
+		
 		Context ctx(L);
 		
 		//get the closure value for functions index

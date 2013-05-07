@@ -186,6 +186,16 @@ void Context::pushInteger(int value)
 	lua_pushinteger (state_, value);
 }
 
+void Context::pushFloat(float f)
+{
+	lua_pushnumber(state_, f);
+}
+
+void Context::pushDouble(double d)
+{
+	lua_pushnumber(state_, d);
+}
+
 void Context::pushStringLiteral(const char* str)
 {
 	checkValid();
@@ -255,6 +265,12 @@ void Context::pushGlobal(const char* key)
 	lua_getglobal (state_, key);
 }
 
+/// Get Boolean
+bool Context::getBoolean(int index)
+{
+	return lua_toboolean(state_, index);
+}
+	
 /**
 * get an integer value
 */
@@ -263,6 +279,19 @@ int Context::getInteger(int index)
 	checkValid();
 	return lua_tointeger(state_, index);
 }
+
+///get float
+float Context::getFloat(int index)
+{
+	return lua_tonumber(state_, index);
+}
+
+///get double
+double Context::getDouble(int index)
+{
+	return lua_tonumber(state_, index);
+}
+
 
 
 /*lua 5.2

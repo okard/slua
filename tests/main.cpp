@@ -23,8 +23,8 @@ public:
 		std::cout << "Calling 'test_simple' with " << ctx.stackCount() << " arguments" << std::endl;
 		
 		//only when there are arguments
-		if(ctx.stackCount() > 1)
-			slua::Debugger::DumpStack(ctx);
+		//if(ctx.stackCount() > 1)
+		//	slua::Debugger::DumpStack(ctx);
 			
 				
 		//function to retrieve LuaObject of table parameter so it can stored here

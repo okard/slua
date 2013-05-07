@@ -43,6 +43,9 @@ public:
 	*/
 	void unref();
 	
+	/**
+	* Get lua_State 
+	*/ 
 	inline operator lua_State* const () { return state_; }
 };
 

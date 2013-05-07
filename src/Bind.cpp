@@ -12,8 +12,6 @@ extern "C" {
 using namespace slua;
 
 
-const char* Bind::REFFIELD = "__ref";
-
 
 
 

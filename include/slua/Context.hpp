@@ -102,6 +102,8 @@ public:
     void pushNil();
     void pushBool(bool value);
     void pushInteger(int value);
+    void pushFloat(float f);
+    void pushDouble(double d);
     void pushStringLiteral(const char* str);
     void pushString(const char* str);
     
@@ -123,21 +125,22 @@ public:
     // Get API
     ////////////////////////////////////////////////////////////////////////////
     
-    /**
-    * get an integer value
-    */
+    /// Get Boolean
+	bool getBoolean(int index);
+        
+    /// get an integer value
     int getInteger(int index);
     
-    //bool getBoolean(int index);
-
-    /**
-    * get a ptr from index
-    */
+    ///get float
+    float getFloat(int index);
+    
+    ///get double
+    double getDouble(int index);
+    
+    ///get a ptr from index
     const void* getPtr(int index);
     
-    /**
-    * Get string
-    */
+    /// Get string
     const char* getString(int index);
     
 	/**
