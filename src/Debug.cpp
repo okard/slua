@@ -30,6 +30,8 @@ static inline bool checkMetaTable(int type)
 
 static void PrintValue(Context& ctx, int index)
 {
+	//TODO rekursive 
+	
 	int type = lua_type(ctx, index);
     switch (type)
     {
@@ -55,7 +57,8 @@ static void PrintValue(Context& ctx, int index)
 				PrintValue(ctx, lua_absindex(ctx, -2));
 				printf(" -> "); 
 				//value
-				PrintValue(ctx, lua_absindex(ctx,-1));
+				//PrintValue(ctx, lua_absindex(ctx,-1));
+				printf("%s", luaL_typename(ctx, lua_absindex(ctx,-1)));
 				lua_pop(ctx, 1);
 			}
 			break;
@@ -121,12 +124,22 @@ typedef struct lua_Debug {
 */
 
 //int lua_getinfo (lua_State *L, const char *what, lua_Debug *ar);
+
 //const char *lua_getlocal (lua_State *L, lua_Debug *ar, int n);
 //int lua_getstack (lua_State *L, int level, lua_Debug *ar);
-
 //const char *lua_setlocal (lua_State *L, lua_Debug *ar, int n);
 
 
 //hooks static functions no instance callback?
+
 //typedef void (*lua_Hook) (lua_State *L, lua_Debug *ar);
 //int lua_sethook (lua_State *L, lua_Hook f, int mask, int count);
+//LUA_HOOKCALL, LUA_HOOKRET, LUA_HOOKTAILCALL, LUA_HOOKLINE, and LUA_HOOKCOUNT
+
+/*
+Argument f is the hook function. 
+mask specifies on which events the hook will be called: 
+ 	it is formed by a bitwise or of the constants LUA_MASKCALL, LUA_MASKRET, LUA_MASKLINE, and LUA_MASKCOUNT. 
+The count argument is only meaningful when the mask includes LUA_MASKCOUNT. 
+ 	For each event, the hook is called as explained below: 
+*/

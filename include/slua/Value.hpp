@@ -7,6 +7,7 @@
 #include <slua/Context.hpp>
 
 namespace slua {
+
 	
 /**
 * Lua Value

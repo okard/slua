@@ -39,8 +39,9 @@ struct BindFunction
 template<class T>
 struct BindStatus
 {
-	const char* className;
+	const char* className; //metatable name
 	//const BindFunction constructor;
+	//const T* factoryMethod();
 	//const BindFunction destructor;
 	const BindFunction<T>* Functions;
 }; 
@@ -110,6 +111,7 @@ public:
 		ctx.pop(1); //pop globaltable
     }
     
+    
     /**
     * Push a object ontp stack
     */ 
@@ -155,7 +157,6 @@ private:
 		//register index function
 		ctx.pushStringLiteral("__index");
 		ctx.pushCopy(meta.getIndex());
-		//ctx.pushFunc(&Bind::lua_index);
 		meta.assignField();
 		
 		// assign functions
@@ -275,30 +276,6 @@ private:
 	//__newindex = function(op, k,v) //block k 0
 	
 	/**
-	* Index dispatcher function?
-	*/
-	static int lua_index(lua_State *L)
-	{	
-		Context ctx(L);
-		
-		//ctx.stack top == 2
-		if(ctx.isType(2, LuaType::STRING))
-		{
-			//1 the object
-			//2 the key
-			if(!ctx.pushMetaTable(1)) //get the metatable
-				return 0;
-			Table tbl;
-			tbl.setto(ctx, -1);  //assign
-			ctx.pushCopy(2);	//push copy of key string
-			tbl.pushField();	//retrieve key from metatable
-			//std::cout << ctx.getTypeString(-1) << std::endl;
-			return 1;
-		}
-		return 0;
-	}
-	
-	/**
 	* Dispatches the function
 	*/
 	template<class T>
@@ -310,6 +287,12 @@ private:
 		
 		//get the closure value for functions index
 		int funcIndex = ctx.getInteger(ctx.upIndex(1));
+		
+		if(ctx.isType(1, LuaType::LIGHTUSERDATA))
+		{
+			auto obj = static_cast<T*>(const_cast<void*>(ctx.getPtr(1)));
+			return (obj->*(T::bindStatus.Functions[funcIndex].mfunc))(ctx);	
+		}
 		
 		Table tbl;
 		tbl.setto(ctx, 1); //self table is the first argument

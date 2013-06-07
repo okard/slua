@@ -13,6 +13,8 @@ namespace slua {
 	
 //TODO with available context?
 typedef int (*LuaFunction) (lua_State *L);
+
+typedef void* lightdata;
   
 /**
 * Higher Level Access to LuaState
@@ -84,6 +86,8 @@ public:
     * Calculate absolute index
     */
     int absIndex(int index);
+    
+    //isValidIndex(index)
     
     /**
     * Get the index for c closure parameter

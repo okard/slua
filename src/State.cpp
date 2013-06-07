@@ -22,7 +22,8 @@ State::State()
 {
     luaL_openlibs(state_);
     
-    
+    //lua_State *lua_newstate (lua_Alloc f, void *ud);
+
     //register panic function:
 	//lua_atpanic
 	//lua_CFunction lua_atpanic (lua_State *L, lua_CFunction panicf);

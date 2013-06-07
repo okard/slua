@@ -21,19 +21,6 @@ test:test_simple(tbl, "test", 14);
 
 
 
--- -------------------------------
-
-local test2 = TestClass();
-
-function test2:test_function()
-	print("test function called");
-	self.x = 555;
-end
-
-test2:test_function();
-test2:test_simple(test2);
-print(test2.x);
-
 --setmetatable(test2, {});
 --test2:test_simple();
 
