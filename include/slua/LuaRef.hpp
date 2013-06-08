@@ -44,6 +44,11 @@ public:
 	void unref();
 	
 	/**
+	* LuaRef is set
+	*/
+	inline bool isSet() const { return set_; }
+	
+	/**
 	* Get lua_State 
 	*/ 
 	inline operator lua_State* const () { return state_; }
