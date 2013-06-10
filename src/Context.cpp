@@ -120,7 +120,7 @@ void Context::pop(int count)
 		
 	checkValid();
 	
-	if(stackGrow() > count)
+	if(stackCount() < count)
 		throw LuaException("Want to pop more elements as available");
 	
 	lua_pop(state_, count);

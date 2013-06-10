@@ -25,6 +25,8 @@ public:
 	void removeReference();
 	bool isShareable();
 	void markShareable();
+	
+	inline unsigned short refCount() const { return refcount_; }
 };
 
 /**
