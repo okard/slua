@@ -55,6 +55,13 @@ public:
 		obj_->addReference();
 	}
 	
+	LuaObjectPtr(const LuaObject* lo)
+		: obj_(const_cast<LuaObject*>(lo))
+	{
+		//no add reference for direct assign //the main ptr
+		//LuaObjectPtr lop = new LuaObject();
+	}
+	
 	~LuaObjectPtr()
 	{
 		if(obj_)
