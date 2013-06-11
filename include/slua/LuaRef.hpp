@@ -19,6 +19,11 @@ private:
 public:
 
 	/**
+	* Create lua ref
+	*/
+	LuaRef();
+
+	/**
 	* Create lua ref for state
 	*/
 	LuaRef(lua_State* const state);
@@ -32,6 +37,11 @@ public:
 	* Set the reference to the top of the object and pops it
 	*/
 	void set();
+	
+	/**
+	* Set ref
+	*/
+	void set(lua_State* state);
 	
 	/**
 	* Push the reference object onto stack

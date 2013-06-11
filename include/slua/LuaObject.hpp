@@ -66,6 +66,7 @@ public:
 	{
 		if(obj_)
 			obj_->removeReference();
+		obj_ = nullptr;
 	}
 	
 	
