@@ -3,6 +3,8 @@
 
 #include <slua/Exception.hpp>
 
+#include <cstdlib>
+
 //Lua Includes
 extern "C" {
     #include <lua.h>
@@ -17,7 +19,7 @@ using namespace slua;
 * Creates a new State
 */
 State::State()
-    : state_(luaL_newstate()),
+    : state_(lua_newstate(&State::lua_alloc, this)),
 	  ctx_(state_)
 {
     luaL_openlibs(state_);
@@ -28,6 +30,10 @@ State::State()
 	//lua_atpanic
 	//lua_CFunction lua_atpanic (lua_State *L, lua_CFunction panicf);
 	//using debugger?
+	
+	//typedef void * (*lua_Alloc) (void *ud, void *ptr, size_t osize, size_t nsize);
+	
+	//lua_Alloc lua_getallocf (lua_State *L, void **ud);
 }
 
 /**
@@ -76,6 +82,30 @@ int State::Execute()
 	}
 	
     return r;
+}
+
+State* State::getState(lua_State* state)
+{
+	void* stateptr;
+	lua_getallocf (state, &stateptr);
+	if(stateptr)
+		return static_cast<State*>(stateptr);
+	else
+		return nullptr;
+}
+
+void* State::lua_alloc(void *ud, void *ptr, size_t osize, size_t nsize)
+{
+	(void)ud;  
+	(void)osize;  
+
+	if (nsize == 0) 
+	{
+		free(ptr);
+		return NULL;
+	}
+	else
+		return realloc(ptr, nsize);
 }
 
 

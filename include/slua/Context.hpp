@@ -11,6 +11,9 @@ struct lua_State;
 
 namespace slua {
 	
+	
+class State;
+		
 //TODO with available context?
 typedef int (*LuaFunction) (lua_State *L);
 
@@ -175,6 +178,8 @@ public:
     //error
     //LoadScript?
     
+    
+    State* getState();
 private:
 	inline void checkValid() const;
 };

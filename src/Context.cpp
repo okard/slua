@@ -9,6 +9,7 @@ extern "C" {
     #include <lualib.h>
 }
 
+#include <slua/State.hpp>
 #include <slua/Exception.hpp>
 #include <slua/Value.hpp>
 
@@ -343,6 +344,14 @@ void Context::call(int args, int results)
 		throw LuaFormatException("Error at call: %s", lua_tostring(state_, -1));
 	}
 }
+
+
+State* Context::getState()
+{
+	return State::getState(state_);
+}
+   
+
 
 // LUA_REGISTRYINDEX is a table
 

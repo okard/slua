@@ -7,6 +7,7 @@
 
 #include "Context.hpp"
 
+#include <cstddef>
 
 struct lua_State;
 
@@ -20,7 +21,7 @@ namespace slua {
 */
 class State
 {
-  private:
+private:
     /// the lua state
     lua_State* state_;
     
@@ -69,10 +70,25 @@ class State
     */
     inline Context& getContext() { return ctx_; }
     
-    //
+    
+    static State* getState(lua_State* state);
     
     //ref to global table?
+private:
+	static void* lua_alloc(void *ud, void *ptr, size_t osize, size_t nsize);
 };
+
+
+template<typename T>
+class StateEx : public slua::State
+{
+private:
+	T obj_;
+public:
+	inline void set(T obj) { obj_ = obj; }
+	inline T get() { return obj_; }
+};
+
 
 } //end namespace slua
 
