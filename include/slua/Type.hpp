@@ -26,6 +26,6 @@ enum class LuaType
 };
 
 	
-};
+} //end namespace slua
 
 #endif

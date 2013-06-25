@@ -13,8 +13,11 @@ struct lua_State;
 
 
 namespace slua {
+	
+class LuaAllocator;
 
 //TODO Add Script.Load to vm at creation
+
 
 /**
 * Lua State
@@ -22,6 +25,9 @@ namespace slua {
 class State
 {
 private:
+	/// Allocator
+    LuaAllocator& allocator_;
+    
     /// the lua state
     lua_State* state_;
     
@@ -70,15 +76,29 @@ private:
     */
     inline Context& getContext() { return ctx_; }
     
+    /**
+    * Get allocator
+    */
+	const LuaAllocator& allocator() const { return allocator_; }
+     
+    /**
+    * Get the lua state object from lua_State handle
+    */
+    static State& getState(lua_State* state);
     
-    static State* getState(lua_State* state);
+    /**
+    * Default lua allocator
+    */
+    static LuaAllocator& defaultAllocator();
     
     //ref to global table?
 private:
+	// static allocation function for bind
 	static void* lua_alloc(void *ud, void *ptr, size_t osize, size_t nsize);
 };
 
 
+//replace with anyptr?
 template<typename T>
 class StateEx : public slua::State
 {

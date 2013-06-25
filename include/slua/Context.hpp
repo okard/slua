@@ -27,11 +27,12 @@ typedef void* lightdata;
 class Context
 {
 private:
-    ///stack size at start
-    int stacksize_;
-    
+
     ///lua state
     lua_State* state_;
+    
+    ///stack size at start
+    int stacksize_;
       
 public:
         
@@ -179,7 +180,7 @@ public:
     //LoadScript?
     
     
-    State* getState();
+    State& getState();
 private:
 	inline void checkValid() const;
 };

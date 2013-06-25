@@ -11,9 +11,8 @@ namespace slua {
 class LuaObject
 {
 private:
-	bool shareable_;
 	unsigned short refcount_;
-	
+	bool shareable_;
 	//luaref
 	//id 
 		
@@ -78,16 +77,23 @@ public:
 		
 		obj_ = const_cast<LuaObject*>(&lo);
 		obj_->addReference();
+		
+		return *this;
 	}
 	
 	//assign
 	LuaObjectPtr& operator=(const LuaObjectPtr& lop)
 	{
-		if(obj_)
-			obj_->removeReference();
+		if(&lop != this)
+		{
+			if(obj_)
+				obj_->removeReference();
+			
+			obj_ = lop.obj_;
+			obj_->addReference();
+		}
 		
-		obj_ = lop.obj_;
-		obj_->addReference();
+		return *this;
 	}
 	
 	//retrieve

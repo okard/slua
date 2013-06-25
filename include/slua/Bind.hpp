@@ -223,7 +223,7 @@ private:
     {
 		T* obj = new T();
 		LuaObject* lo = obj; //make shure is LuaObject
-		
+		(void)lo; //fix warning
 		
 		/*
 		//don't get garbage collected

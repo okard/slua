@@ -346,7 +346,7 @@ void Context::call(int args, int results)
 }
 
 
-State* Context::getState()
+State& Context::getState()
 {
 	return State::getState(state_);
 }

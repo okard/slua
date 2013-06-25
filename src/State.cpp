@@ -1,7 +1,7 @@
 
 #include <slua/State.hpp>
-
 #include <slua/Exception.hpp>
+#include <slua/LuaAllocator.hpp>
 
 #include <cstdlib>
 
@@ -15,12 +15,31 @@ extern "C" {
 using namespace slua;
 
 
+class DefaultAllocator final : public LuaAllocator
+{
+public:
+	void* alloc(State& state, void *ptr, size_t osize, size_t nsize) final
+	{
+		(void)osize;
+		if (nsize == 0) 
+		{
+			free(ptr);
+			return NULL;
+		}
+		else
+			return realloc(ptr, nsize);
+	}
+};
+
+
+
 /**
 * Creates a new State
 */
 State::State()
-    : state_(lua_newstate(&State::lua_alloc, this)),
-	  ctx_(state_)
+    : allocator_(defaultAllocator())
+	,state_(lua_newstate(&State::lua_alloc, this))
+	, ctx_(state_)
 {
     luaL_openlibs(state_);
     
@@ -84,28 +103,31 @@ int State::Execute()
     return r;
 }
 
-State* State::getState(lua_State* state)
+State& State::getState(lua_State* state)
 {
 	void* stateptr;
 	lua_getallocf (state, &stateptr);
 	if(stateptr)
-		return static_cast<State*>(stateptr);
+		return *static_cast<State*>(stateptr);
 	else
-		return nullptr;
+		throw LuaFormatException("Failed to get State");
 }
+
+/**
+* Default lua allocator
+*/
+LuaAllocator& State::defaultAllocator()
+{
+	static DefaultAllocator allocator;
+	return allocator;
+}
+    
 
 void* State::lua_alloc(void *ud, void *ptr, size_t osize, size_t nsize)
 {
-	(void)ud;  
-	(void)osize;  
-
-	if (nsize == 0) 
-	{
-		free(ptr);
-		return NULL;
-	}
-	else
-		return realloc(ptr, nsize);
+	State& state = *reinterpret_cast<State*>(ud);
+	
+	return state.allocator_.alloc(state, ptr, osize, nsize);
 }
 
 
